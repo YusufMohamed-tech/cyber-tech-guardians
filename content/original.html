@@ -100,6 +100,19 @@
   @media (max-width: 900px){ .navlinks{ display:none; } }
 
   .nav-right{ display:flex; align-items:center; gap: 14px; }
+  .ig-nav-link{
+    display:flex; align-items:center; gap:8px; min-height:34px; padding:7px 11px;
+    border:1px solid var(--line); border-radius:6px; background:rgba(10,22,33,.78);
+    color:var(--muted); font-family:var(--mono); font-size:11px; transition:color .25s, border-color .25s, transform .25s;
+  }
+  .ig-nav-link:hover{ color:#fff; border-color:#d62976; transform:translateY(-2px); }
+  .ig-nav-dot{
+    width:9px; height:9px; border-radius:3px;
+    background:linear-gradient(135deg,#feda75,#d62976 55%,#4f5bd5);
+    box-shadow:0 0 12px rgba(214,41,118,.65); animation:igNavPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes igNavPulse{ 50%{ transform:scale(1.28) rotate(12deg); box-shadow:0 0 18px rgba(214,41,118,.9); } }
+  @media (max-width: 520px){ .ig-nav-label{ display:none; } .ig-nav-link{ padding:8px 10px; } }
 
   /* language switcher */
   .langSwitcher{ position:relative; }
@@ -396,6 +409,71 @@
   .progress-fill{ height:100%; width:0%; background: var(--cyan); transition: width .4s ease; }
   .progress-text{ font-family: var(--mono); font-size: 11.5px; color: var(--muted); margin-top:8px; }
 
+  /* ---------- INSTAGRAM ---------- */
+  .instagram-section{ padding-top:0; padding-bottom:100px; }
+  .instagram-card{
+    position:relative; isolation:isolate; overflow:hidden;
+    display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:30px;
+    min-height:230px; padding:42px 46px; border:1px solid var(--line); border-radius:16px;
+    background:linear-gradient(125deg,rgba(13,28,41,.98),rgba(10,22,33,.94));
+    box-shadow:0 30px 90px -45px rgba(79,216,232,.35);
+    transition:border-color .35s, transform .35s, box-shadow .35s;
+  }
+  .instagram-card:hover{
+    transform:translateY(-7px); border-color:rgba(214,41,118,.65);
+    box-shadow:0 34px 90px -38px rgba(214,41,118,.45);
+  }
+  .instagram-card::before{
+    content:''; position:absolute; z-index:-2; width:420px; height:420px; right:-170px; top:-170px;
+    border-radius:50%; background:conic-gradient(from 90deg,#4f5bd5,#962fbf,#d62976,#fa7e1e,#feda75,#4f5bd5);
+    filter:blur(58px); opacity:.19; animation:igAuraSpin 13s linear infinite;
+  }
+  .instagram-card::after{
+    content:''; position:absolute; z-index:-1; inset:0;
+    background:linear-gradient(110deg,transparent 15%,rgba(255,255,255,.05) 42%,transparent 66%);
+    transform:translateX(-115%); animation:igSheen 5.8s ease-in-out infinite;
+  }
+  @keyframes igAuraSpin{ to{ transform:rotate(360deg); } }
+  @keyframes igSheen{ 0%,58%{ transform:translateX(-115%); } 82%,100%{ transform:translateX(115%); } }
+  .ig-mark-shell{ position:relative; width:92px; height:92px; display:grid; place-items:center; }
+  .ig-orbit{
+    position:absolute; inset:-10px; border:1px solid rgba(214,41,118,.32); border-radius:50%;
+    animation:igOrbit 7s linear infinite;
+  }
+  .ig-orbit::before{
+    content:''; position:absolute; top:4px; left:10px; width:7px; height:7px; border-radius:50%;
+    background:#feda75; box-shadow:0 0 12px #fa7e1e;
+  }
+  @keyframes igOrbit{ to{ transform:rotate(360deg); } }
+  .ig-mark{
+    position:relative; width:70px; height:70px; border-radius:21px;
+    background:linear-gradient(145deg,#4f5bd5 4%,#962fbf 34%,#d62976 58%,#fa7e1e 79%,#feda75);
+    box-shadow:0 16px 40px -16px rgba(214,41,118,.8); animation:igFloat 3.4s ease-in-out infinite;
+  }
+  .ig-mark::before{
+    content:''; position:absolute; inset:15px; border:4px solid #fff; border-radius:14px;
+  }
+  .ig-mark::after{
+    content:''; position:absolute; width:16px; height:16px; left:27px; top:27px;
+    border:4px solid #fff; border-radius:50%; box-sizing:border-box;
+    box-shadow:17px -17px 0 -5px #fff;
+  }
+  @keyframes igFloat{ 50%{ transform:translateY(-6px) rotate(-2deg); } }
+  .ig-kicker{ font-family:var(--mono); font-size:11px; letter-spacing:.2em; color:#d98ac0; }
+  .ig-copy h2{ margin-top:8px; color:#fff; font-size:clamp(1.5rem,4vw,2.35rem); text-transform:none; }
+  .ig-copy p{ margin:10px 0 0; max-width:610px; color:var(--muted); font-size:14px; }
+  .ig-cta{ display:inline-flex; align-items:center; gap:9px; margin-top:18px; color:#fff; font-family:var(--mono); font-size:12px; }
+  .ig-cta span:last-child{ color:#f4a261; transition:transform .25s; }
+  .instagram-card:hover .ig-cta span:last-child{ transform:translate(4px,-4px); }
+  .ig-side-mark{ color:rgba(79,216,232,.5); font-family:var(--mono); font-size:34px; transition:color .3s, transform .3s; }
+  .instagram-card:hover .ig-side-mark{ color:#d62976; transform:rotate(8deg); }
+  @media (max-width:700px){
+    .instagram-card{ grid-template-columns:1fr; gap:20px; padding:34px 28px; text-align:center; }
+    .ig-mark-shell{ margin:0 auto; }
+    .ig-copy p{ margin-left:auto; margin-right:auto; }
+    .ig-side-mark{ display:none; }
+  }
+
   footer{
     border-top: 1px solid var(--line); padding: 56px 24px 40px; text-align:center;
     color: var(--muted); font-size: 13px;
@@ -448,6 +526,9 @@
     <a href="#checklist" data-idx="08"><span class="idx">08</span><span data-i18n="nav_checklist">Checklist</span></a>
   </div>
   <div class="nav-right">
+    <a class="ig-nav-link" href="https://www.instagram.com/__cyberguardians/" target="_blank" rel="noopener noreferrer" aria-label="Cyber Tech Guardians on Instagram">
+      <span class="ig-nav-dot" aria-hidden="true"></span><span class="ig-nav-label">@__cyberguardians</span>
+    </a>
     <div class="langSwitcher">
       <button class="langBtn" id="langSwitcherBtn" type="button">🌐 <span id="langBtnLabel">EN</span></button>
       <div class="langSwitcherMenu" id="langSwitcherMenu"></div>
@@ -729,6 +810,23 @@ will be suspended permanently."
   </div>
 </section>
 
+<!-- INSTAGRAM -->
+<section id="instagram" class="instagram-section" aria-labelledby="instagramTitle">
+  <a class="instagram-card reveal" href="https://www.instagram.com/__cyberguardians/" target="_blank" rel="noopener noreferrer" aria-label="Follow Cyber Tech Guardians on Instagram">
+    <div class="ig-mark-shell" aria-hidden="true">
+      <span class="ig-orbit"></span>
+      <span class="ig-mark"></span>
+    </div>
+    <div class="ig-copy">
+      <div class="ig-kicker" data-i18n="ig_kicker">FOLLOW THE MISSION</div>
+      <h2 id="instagramTitle">@__cyberguardians</h2>
+      <p data-i18n="ig_desc">Get practical cyber-safety tips, scam alerts, and safer digital habits in your feed.</p>
+      <span class="ig-cta"><span data-i18n="ig_cta">FOLLOW ON INSTAGRAM</span><span aria-hidden="true">↗</span></span>
+    </div>
+    <div class="ig-side-mark" aria-hidden="true">◎</div>
+  </a>
+</section>
+
 <footer>
   <div class="brand">◆ CYBER TECH GUARDIANS</div>
   <div class="tag" data-i18n="hero_tagline_short">"Secure Your Space, Stay Safe in Cyberspace"</div>
@@ -824,6 +922,7 @@ en:{
   checklist_title:"Quick Safety Tips Summary", checklist_desc:"Tap each one off as you lock it down.",
   check1:"Use strong, unique passwords", check2:"Turn on two-factor authentication", check3:"Keep your personal info private", check4:"Be careful where you click", check5:"Talk to a trusted adult when needed",
   secured_word:"SECURED",
+  ig_kicker:"FOLLOW THE MISSION", ig_desc:"Get practical cyber-safety tips, scam alerts, and safer digital habits in your feed.", ig_cta:"FOLLOW ON INSTAGRAM",
   footer_email_placeholder:"you@email.com", footer_btn:"NOTIFY ME", footer_subscribed:"SUBSCRIBED ✓",
   footer_copyright:"© 2026 Cyber Tech Guardians. Stay smart, stay safe.",
   lang_modal_title:"SELECT LANGUAGE", lang_modal_sub:"Choose your language to continue",
@@ -881,6 +980,7 @@ zh:{
   checklist_title:"安全要点速览", checklist_desc:"每完成一项就点一下。",
   check1:"使用强而独特的密码", check2:"开启双重验证", check3:"保护个人信息隐私", check4:"点击前多加小心", check5:"需要时与信任的成年人交流",
   secured_word:"已完成",
+  ig_kicker:"关注我们的使命", ig_desc:"在你的动态中获取实用的网络安全提示、诈骗警报和更安全的数字习惯。", ig_cta:"在 INSTAGRAM 上关注",
   footer_email_placeholder:"you@email.com", footer_btn:"通知我", footer_subscribed:"已订阅 ✓",
   footer_copyright:"© 2026 Cyber Tech Guardians。保持智慧，保持安全。",
   lang_modal_title:"选择语言", lang_modal_sub:"请选择你的语言以继续",
@@ -938,6 +1038,7 @@ hi:{
   checklist_title:"त्वरित सुरक्षा सारांश", checklist_desc:"हर पूरा होने पर टैप करें।",
   check1:"मज़बूत, अनोखे पासवर्ड इस्तेमाल करें", check2:"टू-फैक्टर ऑथेंटिकेशन चालू करें", check3:"अपनी निजी जानकारी गुप्त रखें", check4:"क्लिक करते समय सावधान रहें", check5:"ज़रूरत पड़ने पर भरोसेमंद वयस्क से बात करें",
   secured_word:"पूरा हुआ",
+  ig_kicker:"हमारे मिशन से जुड़ें", ig_desc:"अपने फ़ीड में उपयोगी साइबर सुरक्षा सुझाव, स्कैम अलर्ट और सुरक्षित डिजिटल आदतें पाएँ।", ig_cta:"INSTAGRAM पर फ़ॉलो करें",
   footer_email_placeholder:"you@email.com", footer_btn:"मुझे सूचित करें", footer_subscribed:"सब्सक्राइब हुआ ✓",
   footer_copyright:"© 2026 Cyber Tech Guardians। स्मार्ट रहें, सुरक्षित रहें।",
   lang_modal_title:"भाषा चुनें", lang_modal_sub:"जारी रखने के लिए अपनी भाषा चुनें",
@@ -995,6 +1096,7 @@ es:{
   checklist_title:"Resumen rápido de seguridad", checklist_desc:"Marca cada punto a medida que lo aseguras.",
   check1:"Usa contraseñas fuertes y únicas", check2:"Activa la autenticación de dos factores", check3:"Mantén tu información personal privada", check4:"Ten cuidado dónde haces clic", check5:"Habla con un adulto de confianza cuando lo necesites",
   secured_word:"ASEGURADO",
+  ig_kicker:"SIGUE LA MISIÓN", ig_desc:"Recibe consejos prácticos de ciberseguridad, alertas de estafas y hábitos digitales más seguros.", ig_cta:"SEGUIR EN INSTAGRAM",
   footer_email_placeholder:"tu@correo.com", footer_btn:"AVÍSAME", footer_subscribed:"SUSCRITO ✓",
   footer_copyright:"© 2026 Cyber Tech Guardians. Sé inteligente, mantente seguro.",
   lang_modal_title:"SELECCIONA UN IDIOMA", lang_modal_sub:"Elige tu idioma para continuar",
@@ -1052,6 +1154,7 @@ fr:{
   checklist_title:"Résumé rapide de sécurité", checklist_desc:"Cochez chaque point au fur et à mesure.",
   check1:"Utilisez des mots de passe forts et uniques", check2:"Activez l'authentification à deux facteurs", check3:"Gardez vos informations personnelles privées", check4:"Faites attention où vous cliquez", check5:"Parlez à un adulte de confiance si besoin",
   secured_word:"SÉCURISÉ",
+  ig_kicker:"SUIVEZ LA MISSION", ig_desc:"Retrouvez des conseils pratiques, des alertes aux arnaques et de meilleures habitudes numériques.", ig_cta:"SUIVRE SUR INSTAGRAM",
   footer_email_placeholder:"vous@email.com", footer_btn:"PRÉVENEZ-MOI", footer_subscribed:"ABONNÉ ✓",
   footer_copyright:"© 2026 Cyber Tech Guardians. Restez malin, restez en sécurité.",
   lang_modal_title:"CHOISISSEZ UNE LANGUE", lang_modal_sub:"Choisissez votre langue pour continuer",
@@ -1109,6 +1212,7 @@ ar:{
   checklist_title:"ملخص سريع لنصائح السلامة", checklist_desc:"اضغط على كل عنصر عند إنجازه.",
   check1:"استخدم كلمات مرور قوية وفريدة", check2:"فعّل التحقق بخطوتين", check3:"حافظ على خصوصية معلوماتك الشخصية", check4:"كن حذراً بشأن ما تنقر عليه", check5:"تحدث إلى شخص بالغ موثوق عند الحاجة",
   secured_word:"تم التأمين",
+  ig_kicker:"تابع مهمتنا", ig_desc:"احصل على نصائح عملية للأمان الإلكتروني وتنبيهات الاحتيال وعادات رقمية أكثر أماناً.", ig_cta:"تابعنا على INSTAGRAM",
   footer_email_placeholder:"you@email.com", footer_btn:"أعلمني", footer_subscribed:"تم الاشتراك ✓",
   footer_copyright:"© 2026 Cyber Tech Guardians. كن ذكياً، وابقَ آمناً.",
   lang_modal_title:"اختر اللغة", lang_modal_sub:"اختر لغتك للمتابعة",
@@ -1166,6 +1270,7 @@ bn:{
   checklist_title:"দ্রুত নিরাপত্তা সারসংক্ষেপ", checklist_desc:"প্রতিটি সম্পন্ন হলে ট্যাপ করুন।",
   check1:"শক্তিশালী, অনন্য পাসওয়ার্ড ব্যবহার করুন", check2:"দ্বি-স্তর যাচাইকরণ চালু করুন", check3:"ব্যক্তিগত তথ্য গোপন রাখুন", check4:"ক্লিক করার সময় সতর্ক থাকুন", check5:"প্রয়োজনে বিশ্বস্ত প্রাপ্তবয়স্কের সাথে কথা বলুন",
   secured_word:"সুরক্ষিত",
+  ig_kicker:"আমাদের মিশন অনুসরণ করুন", ig_desc:"আপনার ফিডে ব্যবহারিক সাইবার নিরাপত্তা টিপস, স্ক্যাম সতর্কতা ও নিরাপদ ডিজিটাল অভ্যাস পান।", ig_cta:"INSTAGRAM-এ অনুসরণ করুন",
   footer_email_placeholder:"you@email.com", footer_btn:"আমাকে জানান", footer_subscribed:"সাবস্ক্রাইব হয়েছে ✓",
   footer_copyright:"© 2026 Cyber Tech Guardians। বুদ্ধিমান থাকুন, নিরাপদ থাকুন।",
   lang_modal_title:"ভাষা নির্বাচন করুন", lang_modal_sub:"চালিয়ে যেতে আপনার ভাষা নির্বাচন করুন",
@@ -1223,6 +1328,7 @@ pt:{
   checklist_title:"Resumo rápido de segurança", checklist_desc:"Marque cada item conforme for garantindo.",
   check1:"Use senhas fortes e únicas", check2:"Ative a autenticação de dois fatores", check3:"Mantenha suas informações pessoais privadas", check4:"Tenha cuidado onde clica", check5:"Fale com um adulto de confiança quando necessário",
   secured_word:"PROTEGIDO",
+  ig_kicker:"SIGA A MISSÃO", ig_desc:"Receba dicas práticas de segurança digital, alertas de golpes e hábitos online mais seguros.", ig_cta:"SEGUIR NO INSTAGRAM",
   footer_email_placeholder:"voce@email.com", footer_btn:"AVISE-ME", footer_subscribed:"INSCRITO ✓",
   footer_copyright:"© 2026 Cyber Tech Guardians. Seja esperto, fique seguro.",
   lang_modal_title:"SELECIONE O IDIOMA", lang_modal_sub:"Escolha seu idioma para continuar",
@@ -1280,6 +1386,7 @@ ru:{
   checklist_title:"Краткая сводка по безопасности", checklist_desc:"Отмечайте каждый пункт по мере выполнения.",
   check1:"Используйте надёжные, уникальные пароли", check2:"Включите двухфакторную аутентификацию", check3:"Держите личную информацию в тайне", check4:"Будьте осторожны с кликами", check5:"При необходимости поговорите с доверенным взрослым",
   secured_word:"ЗАЩИЩЕНО",
+  ig_kicker:"СЛЕДУЙТЕ ЗА МИССИЕЙ", ig_desc:"Получайте практические советы по кибербезопасности, предупреждения о мошенничестве и полезные цифровые привычки.", ig_cta:"ПОДПИСАТЬСЯ В INSTAGRAM",
   footer_email_placeholder:"you@email.com", footer_btn:"УВЕДОМИТЬ МЕНЯ", footer_subscribed:"ПОДПИСАНО ✓",
   footer_copyright:"© 2026 Cyber Tech Guardians. Будьте разумны, будьте в безопасности.",
   lang_modal_title:"ВЫБЕРИТЕ ЯЗЫК", lang_modal_sub:"Выберите язык, чтобы продолжить",
@@ -1337,6 +1444,7 @@ ur:{
   checklist_title:"فوری حفاظتی خلاصہ", checklist_desc:"ہر چیز مکمل ہونے پر ٹیپ کریں۔",
   check1:"مضبوط اور منفرد پاس ورڈز استعمال کریں", check2:"دو مرحلہ تصدیق آن کریں", check3:"اپنی ذاتی معلومات نجی رکھیں", check4:"کلک کرتے وقت محتاط رہیں", check5:"ضرورت پڑنے پر کسی قابل اعتماد بالغ سے بات کریں",
   secured_word:"محفوظ",
+  ig_kicker:"ہمارے مشن کو فالو کریں", ig_desc:"اپنی فیڈ میں عملی سائبر سیفٹی تجاویز، فراڈ الرٹس اور زیادہ محفوظ ڈیجیٹل عادات حاصل کریں۔", ig_cta:"INSTAGRAM پر فالو کریں",
   footer_email_placeholder:"you@email.com", footer_btn:"مجھے آگاہ کریں", footer_subscribed:"سبسکرائب ہو گیا ✓",
   footer_copyright:"© 2026 Cyber Tech Guardians۔ سمجھدار رہیں، محفوظ رہیں۔",
   lang_modal_title:"زبان منتخب کریں", lang_modal_sub:"جاری رکھنے کے لیے اپنی زبان منتخب کریں",
