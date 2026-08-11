@@ -192,11 +192,24 @@
   }
   .terminal-bar span{ width:9px; height:9px; border-radius:50%; background: #33424d; }
   .terminal-bar .label{ font-family: var(--mono); font-size:11px; color: var(--muted); margin-left:8px; }
-  .terminal-body{ padding: 18px 20px; font-family: var(--mono); font-size: 13px; min-height: 140px; }
+  .terminal-body{
+    padding: 18px 20px; font-family: var(--mono); font-size: 13px; min-height: 210px;
+    max-height: 360px; overflow-y:auto; cursor:text; scrollbar-color: var(--cyan-dim) transparent;
+  }
   .terminal-body .line{ opacity:0; color: var(--muted); margin-bottom: 6px; }
   .terminal-body .line.ok{ color: var(--cyan); }
-  .terminal-body .cursor{ display:inline-block; width:8px; height:14px; background: var(--cyan); vertical-align: middle; animation: blink 1s step-end infinite; }
-  @keyframes blink{ 50%{ opacity:0; } }
+  .terminal-output{ display:flex; flex-direction:column; gap:5px; }
+  .terminal-entry{ color: var(--muted); white-space:pre-wrap; overflow-wrap:anywhere; }
+  .terminal-entry.command{ color: var(--text); margin-top:7px; }
+  .terminal-entry.success{ color: var(--cyan); }
+  .terminal-entry.warning{ color: var(--amber); }
+  .terminal-entry.error{ color: var(--danger); }
+  .terminal-input-line{ display:flex; align-items:center; gap:10px; margin-top:9px; color:var(--cyan); }
+  .terminal-input{
+    flex:1; min-width:0; border:0; outline:0; padding:0; background:transparent; color:var(--cyan);
+    font:inherit; caret-color:var(--cyan);
+  }
+  .terminal-input::placeholder{ color:var(--cyan-dim); opacity:.75; }
 
   .reveal{ opacity:0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
   .reveal.in{ opacity:1; transform: translateY(0); }
@@ -452,7 +465,7 @@
   <div class="terminal">
     <div class="terminal-bar">
       <span></span><span></span><span></span>
-      <div class="label" data-i18n="term_label">threat_scan.sh — running</div>
+      <div class="label">guardian_console.sh — interactive</div>
     </div>
     <div class="terminal-body" id="termBody">
       <div class="line"><span data-i18n="term1">$ initializing scan...</span></div>
@@ -460,7 +473,11 @@
       <div class="line"><span data-i18n="term3">$ checking 2FA status...</span> <b style="color:#ff6b6b" data-i18n="term3_status">DISABLED</b></div>
       <div class="line"><span data-i18n="term4">$ scanning inbox for phishing links...</span> <b style="color:#ffb454" data-i18n="term4_status">3 FOUND</b></div>
       <div class="line ok"><span data-i18n="term5">$ recommendation: read on to fix all of this ↓</span></div>
-      <div class="line ok">$ <span class="cursor"></span></div>
+      <div class="terminal-output" id="terminalOutput" aria-live="polite"></div>
+      <label class="terminal-input-line" for="terminalInput">
+        <span aria-hidden="true">$</span>
+        <input class="terminal-input" id="terminalInput" type="text" placeholder="type 'help' and press Enter" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Cyber console command">
+      </label>
     </div>
   </div>
 </section>
@@ -1451,6 +1468,200 @@ revealEls.forEach(el=>revealObserver.observe(el));
 document.querySelectorAll('#termBody .line').forEach((line, i)=>{
   line.style.transition = 'opacity .4s ease';
   setTimeout(()=>{ line.style.opacity = 1; }, 400 + i*450);
+});
+
+// Interactive educational cyber console (client-side simulation only)
+const terminal = document.querySelector('.terminal');
+const terminalBody = document.getElementById('termBody');
+const terminalInput = document.getElementById('terminalInput');
+const terminalOutput = document.getElementById('terminalOutput');
+const terminalHistory = [];
+let terminalHistoryIndex = 0;
+
+const terminalCommandNames = [
+  'help', 'scan', 'status', 'phishing', 'password', '2fa', 'privacy',
+  'check-url', 'hash', 'history', 'about', 'clear'
+];
+
+function appendTerminalLine(text, tone){
+  const line = document.createElement('div');
+  line.className = 'terminal-entry' + (tone ? ' ' + tone : '');
+  line.textContent = text;
+  terminalOutput.appendChild(line);
+  terminalBody.scrollTop = terminalBody.scrollHeight;
+}
+
+function clearTerminal(){
+  terminalOutput.replaceChildren();
+  document.querySelectorAll('#termBody > .line').forEach(line=>line.remove());
+}
+
+function analyzeUrl(rawValue){
+  if(!rawValue) return [{ text:'usage: check-url <address>', tone:'warning' }];
+  const suppliedProtocol = /^[a-z][a-z0-9+.-]*:\/\//i.test(rawValue);
+  let url;
+  try{
+    url = new URL(suppliedProtocol ? rawValue : 'https://' + rawValue);
+  }catch(error){
+    return [{ text:'Unable to parse that address.', tone:'error' }];
+  }
+
+  const flags = [];
+  if(url.protocol !== 'https:') flags.push('Connection is not HTTPS.');
+  if(/^\d{1,3}(\.\d{1,3}){3}$/.test(url.hostname)) flags.push('Host uses a raw IP address.');
+  if(url.hostname.includes('xn--')) flags.push('Host contains an internationalized (punycode) label.');
+  if(url.username || url.password || rawValue.includes('@')) flags.push('Address contains credentials or an @ symbol.');
+  if((url.hostname.match(/-/g) || []).length >= 3) flags.push('Host contains many hyphens.');
+  if(rawValue.length > 100) flags.push('Address is unusually long.');
+  if(['bit.ly','tinyurl.com','t.co','goo.gl'].includes(url.hostname)) flags.push('Address uses a link shortener.');
+
+  const result = [{ text:'Host: ' + url.hostname, tone:'success' }];
+  if(flags.length){
+    flags.forEach(flag=>result.push({ text:'! ' + flag, tone:'warning' }));
+  }else{
+    result.push({ text:'No common URL red flags detected.', tone:'success' });
+  }
+  result.push({ text:'Heuristic only — verify the sender and destination before opening.', tone:'' });
+  return result;
+}
+
+async function createHash(value){
+  if(!value) return [{ text:'usage: hash <text>', tone:'warning' }];
+  const bytes = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  const hex = [...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join('');
+  return [
+    { text:'SHA-256: ' + hex, tone:'success' },
+    { text:'A hash is a fingerprint, not encryption.', tone:'' }
+  ];
+}
+
+async function getTerminalResponse(command, args){
+  const responses = {
+    help: [
+      { text:'CYBER GUARDIAN COMMANDS', tone:'success' },
+      { text:'scan                  run a simulated safety scan', tone:'' },
+      { text:'status                show recommended security posture', tone:'' },
+      { text:'phishing              list phishing warning signs', tone:'' },
+      { text:'password              show password guidance', tone:'' },
+      { text:'2fa                   explain safer second factors', tone:'' },
+      { text:'privacy               show a privacy quick-check', tone:'' },
+      { text:'check-url <address>   inspect common URL red flags locally', tone:'' },
+      { text:'hash <text>           calculate a local SHA-256 fingerprint', tone:'' },
+      { text:'history               show commands used this session', tone:'' },
+      { text:'clear                 clear the console', tone:'' }
+    ],
+    scan: [
+      { text:'[SIMULATED SAFETY SCAN — no device or network access]', tone:'success' },
+      { text:'✓ Password tools: local-only processing', tone:'success' },
+      { text:'✓ Connection: protected by HTTPS', tone:'success' },
+      { text:'! 2FA: verify it is enabled on important accounts', tone:'warning' },
+      { text:'! Inbox: inspect urgent links and unexpected attachments', tone:'warning' },
+      { text:'Result: awareness level raised. Keep learning below ↓', tone:'success' }
+    ],
+    status: [
+      { text:'Recommended posture: STRONG', tone:'success' },
+      { text:'• unique passwords stored in a password manager', tone:'' },
+      { text:'• passkeys or authenticator-app 2FA enabled', tone:'' },
+      { text:'• automatic updates turned on', tone:'' },
+      { text:'• recovery codes stored offline', tone:'' }
+    ],
+    phishing: [
+      { text:'PHISHING RED FLAGS', tone:'warning' },
+      { text:'! misspelled or look-alike sender domains', tone:'' },
+      { text:'! urgent threats, prizes, or unusual payment requests', tone:'' },
+      { text:'! links whose destination differs from their label', tone:'' },
+      { text:'! unexpected attachments or requests for credentials', tone:'' },
+      { text:'When unsure, open the official site yourself—do not use the message link.', tone:'success' }
+    ],
+    password: [
+      { text:'Use 16+ characters and a unique password for every account.', tone:'success' },
+      { text:'Prefer a password manager or a long random passphrase.', tone:'' },
+      { text:'Never send passwords by email, chat, or forms reached from unexpected links.', tone:'warning' }
+    ],
+    '2fa': [
+      { text:'Best: passkey or hardware security key.', tone:'success' },
+      { text:'Good: authenticator app with offline recovery codes.', tone:'' },
+      { text:'SMS is better than no second factor, but can be vulnerable to SIM swapping.', tone:'warning' }
+    ],
+    privacy: [
+      { text:'PRIVACY QUICK-CHECK', tone:'success' },
+      { text:'• review app permissions and remove unused access', tone:'' },
+      { text:'• limit public profile details and location sharing', tone:'' },
+      { text:'• delete old accounts and revoke unknown sessions', tone:'' },
+      { text:'• keep backups encrypted and recovery details current', tone:'' }
+    ],
+    about: [
+      { text:'Cyber Tech Guardians educational console.', tone:'success' },
+      { text:'All commands run locally in your browser; no shell or device access is provided.', tone:'' }
+    ]
+  };
+
+  if(command === 'check-url') return analyzeUrl(args.join(' '));
+  if(command === 'hash') return createHash(args.join(' '));
+  if(command === 'history'){
+    return terminalHistory.length
+      ? terminalHistory.map((item, index)=>({ text:(index + 1) + '  ' + item, tone:'' }))
+      : [{ text:'No commands in this session yet.', tone:'' }];
+  }
+  return responses[command] || [
+    { text:'Command not found: ' + command, tone:'error' },
+    { text:"Type 'help' to see available commands.", tone:'' }
+  ];
+}
+
+async function runTerminalCommand(rawCommand){
+  const normalized = rawCommand.trim();
+  if(!normalized) return;
+  terminalHistory.push(normalized);
+  terminalHistoryIndex = terminalHistory.length;
+  const [command, ...args] = normalized.split(/\s+/);
+  const commandName = command.toLowerCase();
+
+  if(commandName === 'clear'){
+    clearTerminal();
+    return;
+  }
+
+  appendTerminalLine('$ ' + normalized, 'command');
+  terminalInput.disabled = true;
+  try{
+    const lines = await getTerminalResponse(commandName, args);
+    lines.forEach(line=>appendTerminalLine(line.text, line.tone));
+  }catch(error){
+    appendTerminalLine('Unable to complete that local command.', 'error');
+  }finally{
+    terminalInput.disabled = false;
+    terminalInput.focus();
+  }
+}
+
+terminalInput.addEventListener('keydown', (event)=>{
+  if(event.key === 'Enter'){
+    const command = terminalInput.value;
+    terminalInput.value = '';
+    runTerminalCommand(command);
+  }else if(event.key === 'ArrowUp'){
+    event.preventDefault();
+    terminalHistoryIndex = Math.max(0, terminalHistoryIndex - 1);
+    terminalInput.value = terminalHistory[terminalHistoryIndex] || '';
+  }else if(event.key === 'ArrowDown'){
+    event.preventDefault();
+    terminalHistoryIndex = Math.min(terminalHistory.length, terminalHistoryIndex + 1);
+    terminalInput.value = terminalHistory[terminalHistoryIndex] || '';
+  }else if(event.key === 'Tab'){
+    event.preventDefault();
+    const matches = terminalCommandNames.filter(name=>name.startsWith(terminalInput.value.toLowerCase()));
+    if(matches.length === 1) terminalInput.value = matches[0] + (matches[0] === 'check-url' || matches[0] === 'hash' ? ' ' : '');
+    else if(matches.length > 1) appendTerminalLine(matches.join('  '), 'success');
+  }else if((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'l'){
+    event.preventDefault();
+    clearTerminal();
+  }
+});
+
+terminal.addEventListener('click', ()=>{
+  if(window.getSelection().toString().length === 0) terminalInput.focus();
 });
 
 // Nav scrollspy
