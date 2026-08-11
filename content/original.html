@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stay Secure, Surf Sure — Cyber Tech Guardians</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&family=Noto+Sans+SC:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #050b12;
+    --panel: #0a1621;
+    --panel-2: #0d1c29;
+    --line: #16303e;
+    --cyan: #4fd8e8;
+    --cyan-dim: #2a7f8c;
+    --amber: #ffb454;
+    --danger: #ff6b6b;
+    --text: #dcecef;
+    --muted: #7d99a3;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ambient grid background */
+  .grid-bg{
+    position: fixed; inset:0; z-index:-2;
+    background-image:
+      linear-gradient(rgba(79,216,232,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,216,232,0.05) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 90%);
+  }
+  .glow{
+    position: fixed; z-index:-1; border-radius: 50%;
+    filter: blur(120px); opacity: .18; pointer-events:none;
+  }
+  .glow-1{ top:-200px; left:-100px; width:600px; height:600px; background: var(--cyan); }
+  .glow-2{ top:900px; right:-200px; width:500px; height:500px; background: var(--cyan-dim); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+  }
+
+  a{ color: inherit; text-decoration:none; }
+  section{ padding: 120px 24px; max-width: 1100px; margin: 0 auto; position: relative; }
+  h1,h2,h3{ font-family: var(--mono); letter-spacing: -0.01em; margin:0; }
+
+  ::selection{ background: var(--cyan); color: #001014; }
+
+  a:focus-visible, button:focus-visible, .check:focus-visible{
+    outline: 2px solid var(--cyan); outline-offset: 3px;
+  }
+
+  /* ---------- RTL SUPPORT ---------- */
+  html[dir="rtl"] .navlinks{ direction: rtl; }
+  html[dir="rtl"] .why-grid{ direction: rtl; }
+  html[dir="rtl"] .risk-item{ direction: rtl; }
+  html[dir="rtl"] .quiz-box{ direction: rtl; }
+  html[dir="rtl"] .why-grid > div[style]{ border-left:none; border-right: 2px solid var(--cyan-dim); padding-left:0; padding-right:24px; }
+  html[dir="rtl"] .navlinks a.active::after{ left:auto; right:0; }
+  html[dir="rtl"] .privacy-note, html[dir="rtl"] .quiz-msg{ border-left:none; border-right: 3px solid var(--cyan); }
+  html[dir="rtl"] .quiz-msg{ border-right-color: var(--cyan-dim); }
+  html[dir="rtl"] .scam-card::before, html[dir="rtl"] .strength-fill, html[dir="rtl"] .progress-fill, html[dir="rtl"] .bar-fill{ transform-origin: right; }
+  html[dir="rtl"] .risk-item:hover{ transform: translateX(-6px); }
+  html[dir="rtl"] .terminal-body .line, html[dir="rtl"] .pw-input, html[dir="rtl"] .gen-output-wrap input{ direction: ltr; text-align: left; }
+  html[dir="rtl"] .langSwitcherMenu{ left:0; right:auto; }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position: fixed; top:0; left:0; right:0; z-index: 100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 14px 28px;
+    background: rgba(5,11,18,0.75);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    gap: 16px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-family: var(--mono); font-weight:700; font-size:14px; letter-spacing: .05em; white-space:nowrap; }
+  .brand .dot{ width:8px; height:8px; border-radius:50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); animation: pulse 2s infinite; }
+  @keyframes pulse{ 0%,100%{ opacity:1;} 50%{ opacity:.3;} }
+  .navlinks{ display:flex; gap: 24px; font-size: 13px; font-family: var(--mono); color: var(--muted); flex-wrap: wrap; }
+  .navlinks a{ position:relative; padding: 4px 0; transition: color .25s; white-space:nowrap; }
+  .navlinks a:hover, .navlinks a.active{ color: var(--cyan); }
+  .navlinks a.active::after{
+    content:''; position:absolute; left:0; bottom:-4px; width:100%; height:1px; background: var(--cyan);
+  }
+  .navlinks .idx{ opacity:.5; margin-right:4px; }
+  @media (max-width: 900px){ .navlinks{ display:none; } }
+
+  .nav-right{ display:flex; align-items:center; gap: 14px; }
+
+  /* language switcher */
+  .langSwitcher{ position:relative; }
+  .langBtn{
+    display:flex; align-items:center; gap:6px; background: var(--panel); border: 1px solid var(--line);
+    color: var(--text); font-family: var(--mono); font-size: 12px; padding: 8px 12px; border-radius: 6px;
+    cursor:pointer; transition: border-color .25s;
+  }
+  .langBtn:hover{ border-color: var(--cyan); }
+  .langSwitcherMenu{
+    position:absolute; top: calc(100% + 8px); right:0; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 8px; padding: 8px; width: 190px; max-height: 320px; overflow-y:auto;
+    box-shadow: 0 20px 50px -10px rgba(0,0,0,0.8); display:none; z-index: 200;
+  }
+  .langSwitcherMenu.open{ display:block; }
+  .langOption{
+    display:flex; align-items:center; justify-content:space-between; width:100%; background:transparent; border:none;
+    color: var(--text); font-family: var(--sans); font-size: 13px; padding: 9px 10px; border-radius: 5px; cursor:pointer;
+    text-align: left;
+  }
+  .langOption:hover{ background: var(--panel-2); }
+  .langOption.active{ color: var(--cyan); }
+
+  /* ---------- LANGUAGE MODAL ---------- */
+  .lang-modal-overlay{
+    position: fixed; inset:0; z-index: 1000; background: rgba(3,7,11,0.92);
+    backdrop-filter: blur(6px); display:flex; align-items:center; justify-content:center; padding: 24px;
+  }
+  .lang-modal{
+    width: min(640px, 100%); background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 40px 34px; text-align:center;
+    box-shadow: 0 40px 100px -30px rgba(0,0,0,0.9);
+  }
+  .lang-modal-eyebrow{ font-family: var(--mono); font-size:11px; color: var(--cyan); letter-spacing:.2em; margin-bottom:14px; }
+  .lang-modal h2{ font-size: 1.6rem; color:#fff; text-transform: uppercase; margin-bottom: 10px; }
+  .lang-modal p{ color: var(--muted); font-size: 13.5px; margin-bottom: 30px; }
+  .lang-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  @media (max-width: 520px){ .lang-grid{ grid-template-columns: 1fr; } }
+  .lang-item{
+    display:flex; align-items:center; justify-content:space-between; background: var(--panel-2);
+    border: 1px solid var(--line); border-radius: 8px; padding: 13px 16px; cursor:pointer;
+    transition: all .2s; color: var(--text); font-size: 14px;
+  }
+  .lang-item:hover{ border-color: var(--cyan); transform: translateY(-2px); }
+  .lang-item .native{ font-weight:600; }
+  .lang-item .en{ font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height: 100vh; max-width: none;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding: 140px 24px 80px;
+  }
+  .eyebrow{
+    font-family: var(--mono); font-size: 12px; color: var(--cyan);
+    border: 1px solid var(--cyan-dim); border-radius: 100px;
+    padding: 6px 16px; letter-spacing: .12em; margin-bottom: 28px;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .hero h1{
+    font-size: clamp(2.6rem, 7vw, 5.2rem);
+    font-weight: 700; line-height: 1.02; color:#fff;
+    text-transform: uppercase;
+  }
+  .hero h1 span{ color: var(--cyan); }
+  .hero .tagline{
+    font-family: var(--mono); color: var(--muted); font-size: clamp(14px, 2vw, 18px);
+    margin-top: 22px; max-width: 600px;
+  }
+  .cta{
+    margin-top: 44px; display:inline-flex; align-items:center; gap: 10px;
+    background: var(--cyan); color:#00161c; font-family: var(--mono); font-weight:700;
+    padding: 16px 32px; border-radius: 4px; font-size: 14px; letter-spacing:.03em;
+    border:none; cursor:pointer;
+    box-shadow: 0 0 0 rgba(79,216,232,0.5);
+    transition: transform .25s, box-shadow .25s;
+  }
+  .cta:hover{ transform: translateY(-3px); box-shadow: 0 10px 30px -8px rgba(79,216,232,0.6); }
+  .cta:active{ transform: translateY(-1px); }
+
+  .terminal{
+    margin-top: 64px; width: min(640px, 90vw);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    text-align: left; overflow:hidden;
+    box-shadow: 0 30px 80px -30px rgba(0,0,0,0.8);
+  }
+  .terminal-bar{
+    display:flex; align-items:center; gap:8px; padding: 10px 14px;
+    background: var(--panel-2); border-bottom: 1px solid var(--line);
+  }
+  .terminal-bar span{ width:9px; height:9px; border-radius:50%; background: #33424d; }
+  .terminal-bar .label{ font-family: var(--mono); font-size:11px; color: var(--muted); margin-left:8px; }
+  .terminal-body{ padding: 18px 20px; font-family: var(--mono); font-size: 13px; min-height: 140px; }
+  .terminal-body .line{ opacity:0; color: var(--muted); margin-bottom: 6px; }
+  .terminal-body .line.ok{ color: var(--cyan); }
+  .terminal-body .cursor{ display:inline-block; width:8px; height:14px; background: var(--cyan); vertical-align: middle; animation: blink 1s step-end infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .reveal{ opacity:0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform: translateY(0); }
+
+  .section-head{ margin-bottom: 56px; }
+  .section-head .idx{ font-family: var(--mono); color: var(--cyan-dim); font-size:13px; letter-spacing:.15em; text-transform: uppercase; }
+  .section-head h2{ font-size: clamp(1.8rem, 4vw, 2.6rem); color:#fff; margin-top:10px; text-transform: uppercase; }
+  .section-head p{ color: var(--muted); max-width: 620px; margin-top: 14px; font-size: 15.5px; }
+
+  .why-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items:center; }
+  .risk-list{ display:flex; flex-direction:column; gap: 14px; }
+  .risk-item{
+    display:flex; align-items:center; gap: 14px; padding: 14px 18px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+    transition: border-color .3s, transform .3s;
+  }
+  .risk-item:hover{ border-color: var(--cyan-dim); transform: translateX(6px); }
+  .risk-item .icon{ font-family: var(--mono); color: var(--cyan); font-size: 13px; width:26px; }
+  @media (max-width: 760px){ .why-grid{ grid-template-columns: 1fr; } }
+
+  .scam-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .scam-card{
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 26px 24px; position:relative; overflow:hidden;
+    transition: transform .3s, border-color .3s, box-shadow .3s;
+  }
+  .scam-card::before{
+    content:''; position:absolute; top:0; left:0; right:0; height: 3px;
+    background: linear-gradient(90deg, var(--danger), var(--amber));
+    transform: scaleX(0); transform-origin: left; transition: transform .4s;
+  }
+  .scam-card:hover{ transform: translateY(-8px); border-color: var(--cyan-dim); box-shadow: 0 20px 40px -20px rgba(0,0,0,0.6); }
+  .scam-card:hover::before{ transform: scaleX(1); }
+  .scam-tag{ font-family: var(--mono); font-size: 11px; color: var(--amber); letter-spacing:.08em; }
+  .scam-card h3{ color:#fff; font-size: 18px; margin: 10px 0 12px; text-transform: none; font-family: var(--sans); font-weight:700; }
+  .scam-card p{ color: var(--muted); font-size: 14px; margin:0; }
+  @media (max-width: 900px){ .scam-grid{ grid-template-columns: 1fr; } }
+
+  .ethics-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .ethics-card{
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 28px 24px; transition: transform .3s, border-color .3s, box-shadow .3s;
+  }
+  .ethics-card:hover{ transform: translateY(-6px); border-color: var(--cyan-dim); box-shadow: 0 20px 40px -22px rgba(0,0,0,0.6); }
+  .ethics-icon{
+    width: 42px; height: 42px; border-radius: 8px; background: rgba(79,216,232,0.08);
+    border: 1px solid var(--cyan-dim); display:flex; align-items:center; justify-content:center;
+    font-size: 18px; margin-bottom: 18px;
+  }
+  .ethics-card h3{ font-family: var(--sans); font-size: 16px; color:#fff; font-weight:700; margin-bottom:10px; text-transform:none; }
+  .ethics-card p{ font-size: 13.5px; color: var(--muted); margin:0; line-height:1.65; }
+  @media (max-width: 900px){ .ethics-grid{ grid-template-columns: 1fr; } }
+
+  .stats-panel{
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 48px 36px;
+  }
+  .stats-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+  .stat{ text-align:center; }
+  .stat .num{
+    font-family: var(--mono); font-size: clamp(1.8rem, 4vw, 2.6rem); color: var(--cyan); font-weight:700;
+  }
+  .stat .label{ font-size: 12.5px; color: var(--muted); margin-top: 8px; line-height:1.4; }
+  @media (max-width: 900px){ .stats-grid{ grid-template-columns: repeat(2, 1fr); row-gap: 40px; } }
+
+  .tips-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .tip-card{
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 28px 22px; text-align:left; transition: all .3s;
+  }
+  html[dir="rtl"] .tip-card{ text-align:right; }
+  .tip-card:hover{ background: var(--panel-2); border-color: var(--cyan); transform: scale(1.03); }
+  .tip-icon{
+    width: 42px; height:42px; border-radius: 8px; background: rgba(79,216,232,0.08);
+    border: 1px solid var(--cyan-dim); display:flex; align-items:center; justify-content:center;
+    font-family: var(--mono); color: var(--cyan); font-size: 16px; margin-bottom: 18px;
+  }
+  .tip-card h3{ font-family: var(--sans); font-size: 15.5px; color:#fff; font-weight:700; margin-bottom:8px; }
+  .tip-card p{ font-size: 13.5px; color: var(--muted); margin:0; }
+
+  .toolkit-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items:start; }
+  @media (max-width: 900px){ .toolkit-grid{ grid-template-columns: 1fr; } }
+
+  .tool-panel{
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 30px 28px; transition: border-color .3s;
+  }
+  .tool-panel:hover{ border-color: var(--cyan-dim); }
+  .tool-head{ display:flex; gap: 14px; margin-bottom: 22px; align-items:flex-start; }
+  .tool-icon{
+    width: 40px; height:40px; flex-shrink:0; border-radius: 8px; background: rgba(79,216,232,0.08);
+    border: 1px solid var(--cyan-dim); display:flex; align-items:center; justify-content:center; font-size: 17px;
+  }
+  .tool-head h3{ font-family: var(--sans); font-size: 16px; color:#fff; font-weight:700; margin: 0 0 6px; text-transform:none; }
+  .tool-head p{ font-size: 12.8px; color: var(--muted); margin:0; line-height:1.5; }
+
+  .pw-input-wrap, .gen-output-wrap{ display:flex; gap: 8px; margin-bottom: 16px; }
+  .pw-input{
+    flex:1; background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px;
+    padding: 13px 16px; color: var(--text); font-family: var(--mono); font-size: 14px; letter-spacing: .02em;
+    min-width: 0;
+  }
+  .pw-input:focus{ outline:none; border-color: var(--cyan); }
+  .pw-toggle{
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px;
+    width: 46px; flex-shrink:0; color: var(--muted); font-size: 16px; cursor:pointer;
+    transition: all .25s;
+  }
+  .pw-toggle:hover{ border-color: var(--cyan); color: var(--cyan); }
+
+  .strength-track{ height: 6px; background: var(--panel-2); border-radius: 3px; overflow:hidden; margin-bottom: 8px; }
+  .strength-fill{ height:100%; width:0%; background: var(--danger); border-radius:3px; transition: width .35s ease, background .35s ease; }
+  .strength-label{ font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 22px; }
+
+  .rules-list{ list-style:none; margin:0 0 20px; padding:0; display:flex; flex-direction:column; gap: 10px; }
+  .rules-list li{ display:flex; align-items:center; gap: 10px; font-size: 13.5px; color: var(--muted); transition: color .25s; }
+  .rules-list li.met{ color: var(--text); }
+  .rule-box{
+    width: 18px; height:18px; border-radius: 4px; border: 1px solid var(--line); flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size: 11px; color: var(--muted);
+    transition: all .25s;
+  }
+  .rules-list li.met .rule-box{ background: var(--cyan); border-color: var(--cyan); color: #00161c; }
+
+  .gen-controls{ display:flex; flex-direction:column; gap: 16px; margin-bottom: 22px; }
+  .gen-row{ display:flex; align-items:center; gap: 12px; font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  .gen-row input[type="range"]{ flex:1; accent-color: var(--cyan); }
+  .gen-len{ color: var(--cyan); width: 24px; text-align:right; }
+  .gen-toggle{ display:flex; align-items:center; gap: 10px; font-size: 13.5px; color: var(--text); cursor:pointer; }
+  .gen-toggle input{ accent-color: var(--cyan); width:16px; height:16px; }
+
+  .gen-btn{ width:100%; justify-content:center; margin-top: 0; }
+  .copy-msg{ font-family: var(--mono); font-size: 11.5px; color: var(--cyan); min-height: 16px; margin: -8px 0 8px; }
+
+  .privacy-note{
+    margin-top: 20px; font-family: var(--mono); font-size: 12px; line-height: 1.7; color: var(--muted);
+    background: var(--panel-2); border-left: 3px solid var(--cyan); border-radius: 4px; padding: 14px 16px;
+  }
+  .privacy-note strong{ color: var(--cyan); }
+
+  .quiz-box{
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 36px; display:grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items:center;
+  }
+  .quiz-msg{
+    font-family: var(--mono); font-size: 13.5px; background: var(--panel-2);
+    border-left: 3px solid var(--cyan-dim); padding: 20px 22px; border-radius: 4px; color: var(--text);
+    direction: ltr; text-align: left;
+  }
+  .quiz-actions{ display:flex; gap: 14px; margin-top: 20px; flex-wrap:wrap; }
+  .quiz-btn{
+    font-family: var(--mono); font-size: 13px; padding: 12px 22px; border-radius: 4px;
+    border: 1px solid var(--cyan-dim); background: transparent; color: var(--cyan); cursor:pointer;
+    transition: all .25s;
+  }
+  .quiz-btn:hover{ background: var(--cyan); color:#00161c; }
+  .quiz-feedback{ margin-top: 18px; font-family: var(--mono); font-size: 13px; min-height: 20px; }
+  .quiz-feedback.correct{ color: var(--cyan); }
+  .quiz-feedback.wrong{ color: var(--danger); }
+  @media (max-width: 760px){ .quiz-box{ grid-template-columns: 1fr; } }
+
+  .checklist{
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 10px; overflow:hidden;
+  }
+  .check{
+    display:flex; align-items:center; gap:16px; padding: 18px 22px;
+    border-bottom: 1px solid var(--line); cursor:pointer; user-select:none;
+    background: transparent; width:100%; text-align:left; color: var(--text); font-family: var(--sans);
+    font-size: 15px; transition: background .2s;
+  }
+  html[dir="rtl"] .check{ text-align:right; }
+  .check:last-child{ border-bottom:none; }
+  .check:hover{ background: var(--panel-2); }
+  .box{
+    width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--cyan-dim);
+    flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    font-size: 13px; color: var(--cyan); transition: all .25s;
+  }
+  .check.done .box{ background: var(--cyan); color: #00161c; }
+  .check.done span.label{ color: var(--muted); text-decoration: line-through; }
+  .progress-wrap{ padding: 18px 22px 4px; }
+  .progress-track{ height: 5px; background: var(--line); border-radius: 3px; overflow:hidden; }
+  .progress-fill{ height:100%; width:0%; background: var(--cyan); transition: width .4s ease; }
+  .progress-text{ font-family: var(--mono); font-size: 11.5px; color: var(--muted); margin-top:8px; }
+
+  footer{
+    border-top: 1px solid var(--line); padding: 56px 24px 40px; text-align:center;
+    color: var(--muted); font-size: 13px;
+  }
+  footer .brand{ justify-content:center; margin-bottom: 10px; color:#fff; }
+  footer .tag{ font-family: var(--mono); font-size: 12.5px; margin-bottom: 30px; }
+  .signup{ display:flex; gap:10px; justify-content:center; max-width: 380px; margin: 0 auto 30px; flex-wrap: wrap; }
+  .signup input{
+    flex:1; background: var(--panel); border: 1px solid var(--line); border-radius: 4px;
+    padding: 12px 14px; color: var(--text); font-family: var(--sans); font-size: 13px; min-width: 180px;
+  }
+  .signup input:focus{ outline:none; border-color: var(--cyan); }
+  .signup button{
+    background: var(--cyan); border:none; border-radius: 4px; padding: 12px 18px;
+    font-family: var(--mono); font-weight:700; font-size: 12.5px; color:#00161c; cursor:pointer;
+  }
+  .signup button:disabled{ cursor:wait; opacity:.7; }
+  .signup-status{
+    min-height: 20px; margin: -20px auto 24px; color: var(--danger);
+    font-family: var(--mono); font-size: 11.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+
+<!-- LANGUAGE SELECT MODAL -->
+<div class="lang-modal-overlay" id="langModal">
+  <div class="lang-modal">
+    <div class="lang-modal-eyebrow">◆ CYBER TECH GUARDIANS</div>
+    <h2 id="langModalTitle">SELECT LANGUAGE</h2>
+    <p id="langModalSub">Choose your language to continue</p>
+    <div class="lang-grid" id="langGrid"></div>
+  </div>
+</div>
+
+<nav>
+  <div class="brand"><span class="dot"></span> CYBER TECH GUARDIANS</div>
+  <div class="navlinks" id="navlinks">
+    <a href="#why" data-idx="01"><span class="idx">01</span><span data-i18n="nav_risks">Risks</span></a>
+    <a href="#scams" data-idx="02"><span class="idx">02</span><span data-i18n="nav_scams">Scams</span></a>
+    <a href="#ethics" data-idx="03"><span class="idx">03</span><span data-i18n="nav_ethics">Ethics</span></a>
+    <a href="#stats" data-idx="04"><span class="idx">04</span><span data-i18n="nav_stats">Stats</span></a>
+    <a href="#tips" data-idx="05"><span class="idx">05</span><span data-i18n="nav_tips">Tips</span></a>
+    <a href="#toolkit" data-idx="06"><span class="idx">06</span><span data-i18n="nav_toolkit">Toolkit</span></a>
+    <a href="#quiz" data-idx="07"><span class="idx">07</span><span data-i18n="nav_quiz">Quiz</span></a>
+    <a href="#checklist" data-idx="08"><span class="idx">08</span><span data-i18n="nav_checklist">Checklist</span></a>
+  </div>
+  <div class="nav-right">
+    <div class="langSwitcher">
+      <button class="langBtn" id="langSwitcherBtn" type="button">🌐 <span id="langBtnLabel">EN</span></button>
+      <div class="langSwitcherMenu" id="langSwitcherMenu"></div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow" data-i18n="hero_eyebrow">◆ CYBER TECH GUARDIANS PRESENTS</div>
+  <h1><span data-i18n="hero_title1">STAY SECURE</span><br><span data-i18n="hero_title2">SURF SURE</span></h1>
+  <p class="tagline" data-i18n="hero_tagline">"Secure Your Space, Stay Safe in Cyberspace" — practical, no-nonsense defense against the scams that actually work.</p>
+  <button class="cta" onclick="document.getElementById('why').scrollIntoView()"><span data-i18n="hero_cta">LEARN HOW TO STAY SAFE →</span></button>
+
+  <div class="terminal">
+    <div class="terminal-bar">
+      <span></span><span></span><span></span>
+      <div class="label" data-i18n="term_label">threat_scan.sh — running</div>
+    </div>
+    <div class="terminal-body" id="termBody">
+      <div class="line"><span data-i18n="term1">$ initializing scan...</span></div>
+      <div class="line"><span data-i18n="term2">$ checking password strength...</span> <b style="color:#ff6b6b" data-i18n="term2_status">WEAK</b></div>
+      <div class="line"><span data-i18n="term3">$ checking 2FA status...</span> <b style="color:#ff6b6b" data-i18n="term3_status">DISABLED</b></div>
+      <div class="line"><span data-i18n="term4">$ scanning inbox for phishing links...</span> <b style="color:#ffb454" data-i18n="term4_status">3 FOUND</b></div>
+      <div class="line ok"><span data-i18n="term5">$ recommendation: read on to fix all of this ↓</span></div>
+      <div class="line ok">$ <span class="cursor"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY IT MATTERS -->
+<section id="why">
+  <div class="section-head reveal">
+    <div class="idx">// 01 — <span data-i18n="nav_risks">Risks</span></div>
+    <h2 data-i18n="why_title">Why Online Safety Matters</h2>
+    <p data-i18n="why_desc">The internet is a powerful tool — we use it for school, games, chatting, and learning. But it's also full of risk. Being smart online keeps you safe in real life too.</p>
+  </div>
+  <div class="why-grid">
+    <div class="risk-list reveal">
+      <div class="risk-item"><span class="icon">01</span> <span data-i18n="risk1">Hackers targeting weak accounts</span></div>
+      <div class="risk-item"><span class="icon">02</span> <span data-i18n="risk2">Online scams disguised as good deals</span></div>
+      <div class="risk-item"><span class="icon">03</span> <span data-i18n="risk3">Cyberbullying and harassment</span></div>
+      <div class="risk-item"><span class="icon">04</span> <span data-i18n="risk4">Viruses and malware infections</span></div>
+    </div>
+    <div class="reveal" style="font-family: var(--mono); font-size: 14px; color: var(--muted); border-left: 2px solid var(--cyan-dim); padding-left: 24px;" data-i18n="why_note">
+      That's why it's important to understand how to stay safe and protect yourself and your personal information. A few smart habits go a long way.
+    </div>
+  </div>
+</section>
+
+<!-- SCAMS -->
+<section id="scams">
+  <div class="section-head reveal">
+    <div class="idx">// 02 — <span data-i18n="nav_scams">Scams</span></div>
+    <h2 data-i18n="scams_title">Real Scam Examples</h2>
+    <p data-i18n="scams_desc">These aren't hypothetical — they happen every day, to real people.</p>
+  </div>
+  <div class="scam-grid">
+    <div class="scam-card reveal">
+      <div class="scam-tag" data-i18n="scam1_tag">⚠ PHISHING</div>
+      <h3 data-i18n="scam1_title">The Fake Bank Email</h3>
+      <p data-i18n="scam1_desc">Ahmed received an email that looked like it was from his bank, asking him to "verify" his account by clicking a link. He entered his login info — and the next day, his account was emptied.</p>
+    </div>
+    <div class="scam-card reveal">
+      <div class="scam-tag" data-i18n="scam2_tag">⚠ ONLINE SHOPPING</div>
+      <h3 data-i18n="scam2_title">The Handbag That Never Came</h3>
+      <p data-i18n="scam2_desc">Sarah found a designer handbag on a site offering huge discounts. She paid $150, but it never arrived. When she tried to contact support, the website was gone.</p>
+    </div>
+    <div class="scam-card reveal">
+      <div class="scam-tag" data-i18n="scam3_tag">⚠ FAKE JOB</div>
+      <h3 data-i18n="scam3_title">The $100 "Training Fee"</h3>
+      <p data-i18n="scam3_desc">Lina applied for a remote job online. After a fake interview, they said she got the job — but needed to pay $100 for "training materials." She paid, and never heard from them again.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ETHICS -->
+<section id="ethics">
+  <div class="section-head reveal">
+    <div class="idx">// 03 — <span data-i18n="nav_ethics">Ethics</span></div>
+    <h2 data-i18n="ethics_title">The Ethics of Cybersecurity</h2>
+    <p data-i18n="ethics_desc">Security skills are powerful — how you use them defines whether you're protecting people or preying on them.</p>
+  </div>
+  <div class="ethics-grid">
+    <div class="ethics-card reveal">
+      <div class="ethics-icon">⚖</div>
+      <h3 data-i18n="ethics1_title">White-Hat vs Black-Hat</h3>
+      <p data-i18n="ethics1_desc">White-hat hackers find weaknesses to fix them, with permission. Black-hat hackers exploit those same weaknesses to steal, spy, or cause harm. Intent and consent are what separate the two.</p>
+    </div>
+    <div class="ethics-card reveal">
+      <div class="ethics-icon">🔒</div>
+      <h3 data-i18n="ethics2_title">Respect Others' Privacy</h3>
+      <p data-i18n="ethics2_desc">Just because you can access someone's messages, photos, or accounts doesn't mean you should. Snooping through someone's data without consent is a violation, technical skill or not.</p>
+    </div>
+    <div class="ethics-card reveal">
+      <div class="ethics-icon">🚫</div>
+      <h3 data-i18n="ethics3_title">Knowledge Isn't a Weapon</h3>
+      <p data-i18n="ethics3_desc">Learning how scams and exploits work is for defense, not offense. Using that knowledge to harass, stalk, or extort someone turns a safety skill into a harmful one.</p>
+    </div>
+    <div class="ethics-card reveal">
+      <div class="ethics-icon">📢</div>
+      <h3 data-i18n="ethics4_title">Responsible Disclosure</h3>
+      <p data-i18n="ethics4_desc">Found a real security flaw? Report it to the company instead of exploiting it or posting it publicly. Ethical researchers disclose privately and give teams time to fix it.</p>
+    </div>
+    <div class="ethics-card reveal">
+      <div class="ethics-icon">💬</div>
+      <h3 data-i18n="ethics5_title">Digital Empathy</h3>
+      <p data-i18n="ethics5_desc">Cyberbullying, leaked photos, and doxxing aren't "just online" — they cause real harm. Treat people online with the same respect you'd owe them face-to-face.</p>
+    </div>
+    <div class="ethics-card reveal">
+      <div class="ethics-icon">🤝</div>
+      <h3 data-i18n="ethics6_title">Build Trust, Don't Break It</h3>
+      <p data-i18n="ethics6_desc">The strongest security cultures are built on trust. Every ethical choice you make online reinforces that trust instead of eroding it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="section-head reveal">
+    <div class="idx">// 04 — <span data-i18n="nav_stats">Stats</span></div>
+    <h2 data-i18n="stats_title">Actual Statistics & Figures</h2>
+    <p data-i18n="stats_desc">Global scam losses in 2024 exceeded $1 trillion — bigger than most national economies.</p>
+  </div>
+  <div class="stats-panel reveal">
+    <div class="stats-grid">
+      <div class="stat"><div class="num" data-target="608" data-suffix="M">0</div><div class="label" data-i18n="stat1_label">Victims worldwide, 2024</div></div>
+      <div class="stat"><div class="num" data-target="1" data-suffix="T+" data-dollar="true">0</div><div class="label" data-i18n="stat2_label">Global losses to online scams</div></div>
+      <div class="stat"><div class="num" data-target="12.5" data-suffix="B" data-dollar="true" data-decimal="true">0</div><div class="label" data-i18n="stat3_label">US losses reported to the FTC</div></div>
+      <div class="stat"><div class="num" data-target="105120" data-suffix="" data-format="comma">0</div><div class="label" data-i18n="stat4_label">Deepfake attacks reported</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TIPS -->
+<section id="tips">
+  <div class="section-head reveal">
+    <div class="idx">// 05 — <span data-i18n="nav_tips">Tips</span></div>
+    <h2 data-i18n="tips_title">Safety Tips</h2>
+    <p data-i18n="tips_desc">Five habits that block most attacks before they start.</p>
+  </div>
+  <div class="tips-grid">
+    <div class="tip-card reveal"><div class="tip-icon">Aa</div><h3 data-i18n="tip1_title">Strong, Unique Passwords</h3><p data-i18n="tip1_desc">Mix upper/lowercase, numbers, and symbols. Never reuse "123456" or your name.</p></div>
+    <div class="tip-card reveal"><div class="tip-icon">2FA</div><h3 data-i18n="tip2_title">Two-Factor Authentication</h3><p data-i18n="tip2_desc">Even a stolen password won't work without your second code.</p></div>
+    <div class="tip-card reveal"><div class="tip-icon">AV</div><h3 data-i18n="tip3_title">Antivirus Software</h3><p data-i18n="tip3_desc">Scans your device, warns of harmful sites, blocks dangerous files.</p></div>
+    <div class="tip-card reveal"><div class="tip-icon">••</div><h3 data-i18n="tip4_title">Keep Info Private</h3><p data-i18n="tip4_desc">Your address, phone number and school name aren't for strangers.</p></div>
+    <div class="tip-card reveal"><div class="tip-icon">?!</div><h3 data-i18n="tip5_title">Think Before You Click</h3><p data-i18n="tip5_desc">Check the URL. If it looks too good to be true, it probably is.</p></div>
+  </div>
+</section>
+
+<!-- TOOLKIT -->
+<section id="toolkit">
+  <div class="section-head reveal">
+    <div class="idx">// 06 — <span data-i18n="nav_toolkit">Toolkit</span></div>
+    <h2 data-i18n="toolkit_title">Password Toolkit</h2>
+    <p data-i18n="toolkit_desc">Check how strong your password really is, or generate a brand new one — right here in your browser.</p>
+  </div>
+
+  <div class="toolkit-grid">
+
+    <!-- Password Checker -->
+    <div class="tool-panel reveal">
+      <div class="tool-head">
+        <span class="tool-icon">🛡</span>
+        <div>
+          <h3 data-i18n="checker_title">Password Strength Checker</h3>
+          <p data-i18n="checker_desc">Type a password to see how it holds up. Nothing is sent anywhere — this runs entirely on your device.</p>
+        </div>
+      </div>
+
+      <div class="pw-input-wrap">
+        <input type="password" id="pwCheckInput" class="pw-input" data-i18n-placeholder="pw_placeholder" placeholder="Type a password to check..." autocomplete="off" spellcheck="false">
+        <button class="pw-toggle" id="pwToggleBtn" type="button" aria-label="Show password">👁</button>
+      </div>
+
+      <div class="strength-track"><div class="strength-fill" id="strengthFill"></div></div>
+      <div class="strength-label" id="strengthLabel" data-i18n="strength_default">Enter a password above</div>
+
+      <ul class="rules-list" id="rulesList">
+        <li data-rule="length"><span class="rule-box">–</span> <span data-i18n="rule_length">At least 8 characters</span></li>
+        <li data-rule="upper"><span class="rule-box">–</span> <span data-i18n="rule_upper">One uppercase letter (A–Z)</span></li>
+        <li data-rule="lower"><span class="rule-box">–</span> <span data-i18n="rule_lower">One lowercase letter (a–z)</span></li>
+        <li data-rule="number"><span class="rule-box">–</span> <span data-i18n="rule_number">One number (0–9)</span></li>
+        <li data-rule="symbol"><span class="rule-box">–</span> <span data-i18n="rule_symbol">One special symbol (!, @, #, etc.)</span></li>
+      </ul>
+
+      <div class="privacy-note" id="checkerPrivacyNote">
+        🔒 <span data-i18n-html="checker_privacy">This password is checked <strong>entirely in your browser</strong>. It is never stored, logged, saved, or transmitted anywhere — not to us, not to a server. It's evaluated and immediately discarded.</span>
+      </div>
+    </div>
+
+    <!-- Password Generator -->
+    <div class="tool-panel reveal">
+      <div class="tool-head">
+        <span class="tool-icon">⚙</span>
+        <div>
+          <h3 data-i18n="gen_title">Password Generator</h3>
+          <p data-i18n="gen_desc">Create a strong random password using your chosen options.</p>
+        </div>
+      </div>
+
+      <div class="gen-output-wrap">
+        <input type="text" id="genOutput" class="pw-input" readonly value="Click generate ↓" data-i18n-value="gen_placeholder">
+        <button class="pw-toggle" id="copyBtn" type="button" aria-label="Copy password">📋</button>
+      </div>
+      <div class="copy-msg" id="copyMsg"></div>
+
+      <div class="gen-controls">
+        <label class="gen-row">
+          <span data-i18n="gen_length_label">Length</span>
+          <input type="range" id="lenSlider" min="6" max="32" value="16">
+          <span class="gen-len" id="lenValue">16</span>
+        </label>
+        <label class="gen-toggle"><input type="checkbox" id="optUpper" checked> <span data-i18n="opt_upper">Include uppercase (A–Z)</span></label>
+        <label class="gen-toggle"><input type="checkbox" id="optLower" checked> <span data-i18n="opt_lower">Include lowercase (a–z)</span></label>
+        <label class="gen-toggle"><input type="checkbox" id="optNumbers" checked> <span data-i18n="opt_numbers">Include numbers (0–9)</span></label>
+        <label class="gen-toggle"><input type="checkbox" id="optSymbols" checked> <span data-i18n="opt_symbols">Include symbols (!@#$%)</span></label>
+      </div>
+
+      <button class="cta gen-btn" id="generateBtn"><span data-i18n="gen_btn">GENERATE PASSWORD</span></button>
+
+      <div class="privacy-note">
+        🔒 <span data-i18n-html="gen_privacy">Everything above runs locally in your browser. Generated passwords are <strong>never stored, logged, saved, or sent anywhere</strong> — not to us, not to a server, not anywhere. Once you leave this page, it's gone.</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <div class="section-head reveal">
+    <div class="idx">// 07 — <span data-i18n="nav_quiz">Quiz</span></div>
+    <h2 data-i18n="quiz_title">Spot the Phishing Email</h2>
+    <p data-i18n="quiz_desc">Would you fall for it?</p>
+  </div>
+  <div class="quiz-box reveal">
+    <div>
+      <div class="quiz-msg">
+FROM: security@yourbnak-alerts.com<br>
+SUBJECT: Urgent — Verify your account now!!<br><br>
+"Dear Customer, we noticed unusual activity.
+Click here within 24 hours or your account
+will be suspended permanently."
+      </div>
+    </div>
+    <div>
+      <p style="color: var(--muted); font-size: 14px; margin-bottom:4px;" data-i18n="quiz_question">Is this email legit or a phishing attempt?</p>
+      <div class="quiz-actions">
+        <button class="quiz-btn" onclick="quizAnswer(false)">✅ <span data-i18n="quiz_btn_legit">Looks Legit</span></button>
+        <button class="quiz-btn" onclick="quizAnswer(true)">🚩 <span data-i18n="quiz_btn_phishing">It's Phishing</span></button>
+      </div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CHECKLIST -->
+<section id="checklist">
+  <div class="section-head reveal">
+    <div class="idx">// 08 — <span data-i18n="nav_checklist">Checklist</span></div>
+    <h2 data-i18n="checklist_title">Quick Safety Tips Summary</h2>
+    <p data-i18n="checklist_desc">Tap each one off as you lock it down.</p>
+  </div>
+  <div class="checklist reveal">
+    <button class="check"><span class="box">✓</span><span class="label" data-i18n="check1">Use strong, unique passwords</span></button>
+    <button class="check"><span class="box">✓</span><span class="label" data-i18n="check2">Turn on two-factor authentication</span></button>
+    <button class="check"><span class="box">✓</span><span class="label" data-i18n="check3">Keep your personal info private</span></button>
+    <button class="check"><span class="box">✓</span><span class="label" data-i18n="check4">Be careful where you click</span></button>
+    <button class="check"><span class="box">✓</span><span class="label" data-i18n="check5">Talk to a trusted adult when needed</span></button>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">0 / 5</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="brand">◆ CYBER TECH GUARDIANS</div>
+  <div class="tag" data-i18n="hero_tagline_short">"Secure Your Space, Stay Safe in Cyberspace"</div>
+  <form class="signup" id="signupForm">
+    <input type="email" id="signupEmail" name="email" data-i18n-placeholder="footer_email_placeholder" placeholder="you@email.com" autocomplete="email" maxlength="254" required>
+    <button type="submit" id="signupBtn" data-i18n="footer_btn">NOTIFY ME</button>
+  </form>
+  <div class="signup-status" id="signupStatus" role="status" aria-live="polite"></div>
+  <div data-i18n="footer_copyright">© 2026 Cyber Tech Guardians. Stay smart, stay safe.</div>
+</footer>
+
+<script>
+/* =========================================================
+   TRANSLATIONS
+========================================================= */
+const LANGS = [
+  { code:'en', native:'English', dir:'ltr' },
+  { code:'zh', native:'中文', dir:'ltr' },
+  { code:'hi', native:'हिन्दी', dir:'ltr' },
+  { code:'es', native:'Español', dir:'ltr' },
+  { code:'fr', native:'Français', dir:'ltr' },
+  { code:'ar', native:'العربية', dir:'rtl' },
+  { code:'bn', native:'বাংলা', dir:'ltr' },
+  { code:'pt', native:'Português', dir:'ltr' },
+  { code:'ru', native:'Русский', dir:'ltr' },
+  { code:'ur', native:'اردو', dir:'rtl' },
+];
+
+const FONT_STACKS = {
+  en:{ sans:"'Inter', sans-serif", mono:"'Space Mono', monospace" },
+  zh:{ sans:"'Noto Sans SC','Inter', sans-serif", mono:"'Noto Sans SC','Space Mono', monospace" },
+  hi:{ sans:"'Noto Sans Devanagari','Inter', sans-serif", mono:"'Noto Sans Devanagari','Space Mono', monospace" },
+  es:{ sans:"'Inter', sans-serif", mono:"'Space Mono', monospace" },
+  fr:{ sans:"'Inter', sans-serif", mono:"'Space Mono', monospace" },
+  ar:{ sans:"'Noto Sans Arabic','Inter', sans-serif", mono:"'Noto Sans Arabic','Space Mono', monospace" },
+  bn:{ sans:"'Noto Sans Bengali','Inter', sans-serif", mono:"'Noto Sans Bengali','Space Mono', monospace" },
+  pt:{ sans:"'Inter', sans-serif", mono:"'Space Mono', monospace" },
+  ru:{ sans:"'Inter', sans-serif", mono:"'Space Mono', monospace" },
+  ur:{ sans:"'Noto Nastaliq Urdu','Inter', sans-serif", mono:"'Noto Nastaliq Urdu','Space Mono', monospace" },
+};
+
+const translations = {
+en:{
+  nav_risks:"Risks", nav_scams:"Scams", nav_ethics:"Ethics", nav_stats:"Stats", nav_tips:"Tips", nav_toolkit:"Toolkit", nav_quiz:"Quiz", nav_checklist:"Checklist",
+  hero_eyebrow:"◆ CYBER TECH GUARDIANS PRESENTS", hero_title1:"STAY SECURE", hero_title2:"SURF SURE",
+  hero_tagline:'"Secure Your Space, Stay Safe in Cyberspace" — practical, no-nonsense defense against the scams that actually work.',
+  hero_tagline_short:'"Secure Your Space, Stay Safe in Cyberspace"',
+  hero_cta:"LEARN HOW TO STAY SAFE →",
+  term_label:"threat_scan.sh — running",
+  term1:"$ initializing scan...", term2:"$ checking password strength...", term2_status:"WEAK",
+  term3:"$ checking 2FA status...", term3_status:"DISABLED",
+  term4:"$ scanning inbox for phishing links...", term4_status:"3 FOUND",
+  term5:"$ recommendation: read on to fix all of this ↓",
+  why_title:"Why Online Safety Matters",
+  why_desc:"The internet is a powerful tool — we use it for school, games, chatting, and learning. But it's also full of risk. Being smart online keeps you safe in real life too.",
+  risk1:"Hackers targeting weak accounts", risk2:"Online scams disguised as good deals", risk3:"Cyberbullying and harassment", risk4:"Viruses and malware infections",
+  why_note:"That's why it's important to understand how to stay safe and protect yourself and your personal information. A few smart habits go a long way.",
+  scams_title:"Real Scam Examples", scams_desc:"These aren't hypothetical — they happen every day, to real people.",
+  scam1_tag:"⚠ PHISHING", scam1_title:"The Fake Bank Email", scam1_desc:'Ahmed received an email that looked like it was from his bank, asking him to "verify" his account by clicking a link. He entered his login info — and the next day, his account was emptied.',
+  scam2_tag:"⚠ ONLINE SHOPPING", scam2_title:"The Handbag That Never Came", scam2_desc:"Sarah found a designer handbag on a site offering huge discounts. She paid $150, but it never arrived. When she tried to contact support, the website was gone.",
+  scam3_tag:"⚠ FAKE JOB", scam3_title:'The $100 "Training Fee"', scam3_desc:'Lina applied for a remote job online. After a fake interview, they said she got the job — but needed to pay $100 for "training materials." She paid, and never heard from them again.',
+  ethics_title:"The Ethics of Cybersecurity", ethics_desc:"Security skills are powerful — how you use them defines whether you're protecting people or preying on them.",
+  ethics1_title:"White-Hat vs Black-Hat", ethics1_desc:"White-hat hackers find weaknesses to fix them, with permission. Black-hat hackers exploit those same weaknesses to steal, spy, or cause harm. Intent and consent are what separate the two.",
+  ethics2_title:"Respect Others' Privacy", ethics2_desc:"Just because you can access someone's messages, photos, or accounts doesn't mean you should. Snooping through someone's data without consent is a violation, technical skill or not.",
+  ethics3_title:"Knowledge Isn't a Weapon", ethics3_desc:"Learning how scams and exploits work is for defense, not offense. Using that knowledge to harass, stalk, or extort someone turns a safety skill into a harmful one.",
+  ethics4_title:"Responsible Disclosure", ethics4_desc:"Found a real security flaw? Report it to the company instead of exploiting it or posting it publicly. Ethical researchers disclose privately and give teams time to fix it.",
+  ethics5_title:"Digital Empathy", ethics5_desc:'Cyberbullying, leaked photos, and doxxing aren\'t "just online" — they cause real harm. Treat people online with the same respect you\'d owe them face-to-face.',
+  ethics6_title:"Build Trust, Don't Break It", ethics6_desc:"The strongest security cultures are built on trust. Every ethical choice you make online reinforces that trust instead of eroding it.",
+  stats_title:"Actual Statistics & Figures", stats_desc:"Global scam losses in 2024 exceeded $1 trillion — bigger than most national economies.",
+  stat1_label:"Victims worldwide, 2024", stat2_label:"Global losses to online scams", stat3_label:"US losses reported to the FTC", stat4_label:"Deepfake attacks reported",
+  tips_title:"Safety Tips", tips_desc:"Five habits that block most attacks before they start.",
+  tip1_title:"Strong, Unique Passwords", tip1_desc:'Mix upper/lowercase, numbers, and symbols. Never reuse "123456" or your name.',
+  tip2_title:"Two-Factor Authentication", tip2_desc:"Even a stolen password won't work without your second code.",
+  tip3_title:"Antivirus Software", tip3_desc:"Scans your device, warns of harmful sites, blocks dangerous files.",
+  tip4_title:"Keep Info Private", tip4_desc:"Your address, phone number and school name aren't for strangers.",
+  tip5_title:"Think Before You Click", tip5_desc:"Check the URL. If it looks too good to be true, it probably is.",
+  toolkit_title:"Password Toolkit", toolkit_desc:"Check how strong your password really is, or generate a brand new one — right here in your browser.",
+  checker_title:"Password Strength Checker", checker_desc:"Type a password to see how it holds up. Nothing is sent anywhere — this runs entirely on your device.",
+  pw_placeholder:"Type a password to check...", strength_default:"Enter a password above", strength_prefix:"Strength: ",
+  strength_weak:"Weak", strength_medium:"Medium", strength_strong:"Strong", strength_verystrong:"Very Strong",
+  rule_length:"At least 8 characters", rule_upper:"One uppercase letter (A–Z)", rule_lower:"One lowercase letter (a–z)", rule_number:"One number (0–9)", rule_symbol:"One special symbol (!, @, #, etc.)",
+  checker_privacy:"This password is checked <strong>entirely in your browser</strong>. It is never stored, logged, saved, or transmitted anywhere — not to us, not to a server. It's evaluated and immediately discarded.",
+  gen_title:"Password Generator", gen_desc:"Create a strong random password using your chosen options.",
+  gen_placeholder:"Click generate ↓", gen_length_label:"Length",
+  opt_upper:"Include uppercase (A–Z)", opt_lower:"Include lowercase (a–z)", opt_numbers:"Include numbers (0–9)", opt_symbols:"Include symbols (!@#$%)",
+  gen_btn:"GENERATE PASSWORD",
+  gen_privacy:"Everything above runs locally in your browser. Generated passwords are <strong>never stored, logged, saved, or sent anywhere</strong> — not to us, not to a server, not anywhere. Once you leave this page, it's gone.",
+  copy_msg:"Copied to clipboard — not saved anywhere.", select_option_msg:"Select at least one option",
+  quiz_title:"Spot the Phishing Email", quiz_desc:"Would you fall for it?", quiz_question:"Is this email legit or a phishing attempt?",
+  quiz_btn_legit:"Looks Legit", quiz_btn_phishing:"It's Phishing",
+  quiz_correct:"✅ Correct — misspelled domain, urgency, and a suspicious link are classic phishing red flags.",
+  quiz_wrong:'🚩 Actually, this is phishing — look closely at "yourbnak-alerts.com" and the urgent threat.',
+  checklist_title:"Quick Safety Tips Summary", checklist_desc:"Tap each one off as you lock it down.",
+  check1:"Use strong, unique passwords", check2:"Turn on two-factor authentication", check3:"Keep your personal info private", check4:"Be careful where you click", check5:"Talk to a trusted adult when needed",
+  secured_word:"SECURED",
+  footer_email_placeholder:"you@email.com", footer_btn:"NOTIFY ME", footer_subscribed:"SUBSCRIBED ✓",
+  footer_copyright:"© 2026 Cyber Tech Guardians. Stay smart, stay safe.",
+  lang_modal_title:"SELECT LANGUAGE", lang_modal_sub:"Choose your language to continue",
+},
+zh:{
+  nav_risks:"风险", nav_scams:"骗局", nav_ethics:"道德", nav_stats:"数据", nav_tips:"提示", nav_toolkit:"工具", nav_quiz:"测验", nav_checklist:"清单",
+  hero_eyebrow:"◆ CYBER TECH GUARDIANS 出品", hero_title1:"保持安全", hero_title2:"放心上网",
+  hero_tagline:"“保护你的空间，安全畅游网络世界”——针对真实有效诈骗手段的实用防御指南。",
+  hero_tagline_short:"“保护你的空间，安全畅游网络世界”",
+  hero_cta:"了解如何保持安全 →",
+  term_label:"threat_scan.sh — 运行中",
+  term1:"$ 正在初始化扫描...", term2:"$ 正在检查密码强度...", term2_status:"弱",
+  term3:"$ 正在检查双重验证状态...", term3_status:"未启用",
+  term4:"$ 正在扫描收件箱中的钓鱼链接...", term4_status:"发现3个",
+  term5:"$ 建议：继续阅读以解决以上所有问题 ↓",
+  why_title:"为什么网络安全很重要",
+  why_desc:"互联网是强大的工具——我们用它学习、玩游戏、聊天。但它也充满风险，如黑客、诈骗、网络霸凌和病毒。保持网络智慧也能让你在现实生活中更安全。",
+  risk1:"黑客针对薄弱账户发起攻击", risk2:"伪装成优惠的网络诈骗", risk3:"网络霸凌与骚扰", risk4:"病毒与恶意软件感染",
+  why_note:"因此，了解如何保护自己和个人信息非常重要。养成一些聪明的习惯会大有帮助。",
+  scams_title:"真实诈骗案例", scams_desc:"这些不是假设情况——它们每天都在真实发生。",
+  scam1_tag:"⚠ 网络钓鱼", scam1_title:"虚假银行邮件", scam1_desc:"艾哈迈德收到一封看似来自银行的邮件，要求他点击链接“验证”账户。他输入了登录信息——第二天账户就被清空了。",
+  scam2_tag:"⚠ 网购诈骗", scam2_title:"永远没到货的手袋", scam2_desc:"莎拉在一个大幅打折的网站上看中了一个设计师手袋，支付了150美元，但商品从未送达，联系客服时网站已经消失。",
+  scam3_tag:"⚠ 虚假招聘", scam3_title:"100美元的“培训费”", scam3_desc:"莉娜在网上申请了一份远程工作。经过一次虚假面试后，对方称她被录用了，但需要支付100美元的“培训材料费”。她付了钱，之后再也没有对方的消息。",
+  ethics_title:"网络安全的道德准则", ethics_desc:"安全技能非常强大——你如何使用它，决定了你是在保护他人还是在伤害他人。",
+  ethics1_title:"白帽与黑帽黑客", ethics1_desc:"白帽黑客在获得许可的情况下发现漏洞并加以修复；黑帽黑客利用同样的漏洞进行盗窃、监视或造成伤害。技术手段可能相同——意图和是否得到同意才是区别所在。",
+  ethics2_title:"尊重他人隐私", ethics2_desc:"能够访问他人的消息、照片或账户，并不代表你应该这样做。未经同意窥探他人数据，无论技术水平如何，都是一种侵犯。",
+  ethics3_title:"知识不是武器", ethics3_desc:"了解诈骗和漏洞的运作方式是为了防御，而非进攻。利用这些知识去骚扰、跟踪或勒索他人，会把一项安全技能变成伤害他人的工具。",
+  ethics4_title:"负责任的披露", ethics4_desc:"发现了真实的安全漏洞？应向相关公司报告，而不是利用它或公开发布。有道德的研究者会私下披露，给团队时间进行修复。",
+  ethics5_title:"数字同理心", ethics5_desc:"网络霸凌、照片泄露和人肉搜索并非“只是发生在网上”——它们会带来真实的伤害。对待网络上的人，应保持与现实生活中同等的尊重。",
+  ethics6_title:"建立信任，而非破坏信任", ethics6_desc:"最强大的安全文化建立在信任之上。你在网上做出的每一个道德选择，都在加强而非削弱这种信任。",
+  stats_title:"真实统计数据", stats_desc:"2024年全球诈骗损失超过1万亿美元——超过大多数国家的经济总量。",
+  stat1_label:"2024年全球受害人数", stat2_label:"全球网络诈骗损失", stat3_label:"美国FTC报告损失", stat4_label:"报告的深度伪造攻击数",
+  tips_title:"安全小贴士", tips_desc:"五个能在攻击开始前就阻止大多数威胁的习惯。",
+  tip1_title:"强而独特的密码", tip1_desc:"混合使用大小写字母、数字和符号。切勿使用“123456”或自己的名字。",
+  tip2_title:"双重验证（2FA）", tip2_desc:"即使密码被盗，没有第二重验证码也无法登录。",
+  tip3_title:"杀毒软件", tip3_desc:"扫描设备、警告危险网站、拦截危险文件。",
+  tip4_title:"保护个人信息", tip4_desc:"你的住址、电话号码和学校名称不该透露给陌生人。",
+  tip5_title:"点击前三思", tip5_desc:"检查网址。如果好得令人难以置信，那很可能就是假的。",
+  toolkit_title:"密码工具箱", toolkit_desc:"在浏览器中直接检查密码强度，或生成一个全新的密码。",
+  checker_title:"密码强度检测器", checker_desc:"输入密码查看其强度。所有内容都不会被发送——完全在你的设备上运行。",
+  pw_placeholder:"输入要检查的密码...", strength_default:"请在上方输入密码", strength_prefix:"强度：",
+  strength_weak:"弱", strength_medium:"中等", strength_strong:"强", strength_verystrong:"非常强",
+  rule_length:"至少8个字符", rule_upper:"至少一个大写字母（A–Z）", rule_lower:"至少一个小写字母（a–z）", rule_number:"至少一个数字（0–9）", rule_symbol:"至少一个特殊符号（!、@、# 等）",
+  checker_privacy:"此密码<strong>完全在你的浏览器中</strong>进行检查，不会被存储、记录或发送到任何地方——不会发送给我们，也不会发送到任何服务器。检测完成后会立即丢弃。",
+  gen_title:"密码生成器", gen_desc:"根据你选择的选项生成一个强随机密码。",
+  gen_placeholder:"点击生成 ↓", gen_length_label:"长度",
+  opt_upper:"包含大写字母（A–Z）", opt_lower:"包含小写字母（a–z）", opt_numbers:"包含数字（0–9）", opt_symbols:"包含符号（!@#$%）",
+  gen_btn:"生成密码",
+  gen_privacy:"以上所有内容均在你的浏览器本地运行。生成的密码<strong>绝不会被存储、记录或发送到任何地方</strong>——不会发给我们，也不会发送到服务器。离开此页面后即刻消失。",
+  copy_msg:"已复制到剪贴板——不会被保存。", select_option_msg:"请至少选择一个选项",
+  quiz_title:"识别钓鱼邮件", quiz_desc:"你会上当吗？", quiz_question:"这封邮件是真实的还是钓鱼邮件？",
+  quiz_btn_legit:"看起来是真的", quiz_btn_phishing:"这是钓鱼邮件",
+  quiz_correct:"✅ 正确——拼写错误的域名、制造紧迫感和可疑链接都是典型的钓鱼特征。",
+  quiz_wrong:"🚩 实际上这是钓鱼邮件——仔细看看“yourbnak-alerts.com”这个域名和紧急威胁语气。",
+  checklist_title:"安全要点速览", checklist_desc:"每完成一项就点一下。",
+  check1:"使用强而独特的密码", check2:"开启双重验证", check3:"保护个人信息隐私", check4:"点击前多加小心", check5:"需要时与信任的成年人交流",
+  secured_word:"已完成",
+  footer_email_placeholder:"you@email.com", footer_btn:"通知我", footer_subscribed:"已订阅 ✓",
+  footer_copyright:"© 2026 Cyber Tech Guardians。保持智慧，保持安全。",
+  lang_modal_title:"选择语言", lang_modal_sub:"请选择你的语言以继续",
+},
+hi:{
+  nav_risks:"जोखिम", nav_scams:"धोखाधड़ी", nav_ethics:"नैतिकता", nav_stats:"आँकड़े", nav_tips:"सुझाव", nav_toolkit:"टूलकिट", nav_quiz:"क्विज़", nav_checklist:"चेकलिस्ट",
+  hero_eyebrow:"◆ CYBER TECH GUARDIANS प्रस्तुत करता है", hero_title1:"सुरक्षित रहें", hero_title2:"भरोसे से सर्फ करें",
+  hero_tagline:'"अपनी जगह सुरक्षित रखें, साइबरस्पेस में सुरक्षित रहें" — असल में काम करने वाले घोटालों के खिलाफ व्यावहारिक बचाव।',
+  hero_tagline_short:'"अपनी जगह सुरक्षित रखें, साइबरस्पेस में सुरक्षित रहें"',
+  hero_cta:"सुरक्षित रहना सीखें →",
+  term_label:"threat_scan.sh — चल रहा है",
+  term1:"$ स्कैन शुरू हो रहा है...", term2:"$ पासवर्ड की मजबूती जाँची जा रही है...", term2_status:"कमज़ोर",
+  term3:"$ 2FA स्थिति जाँची जा रही है...", term3_status:"बंद",
+  term4:"$ इनबॉक्स में फ़िशिंग लिंक खोजे जा रहे हैं...", term4_status:"3 मिले",
+  term5:"$ सुझाव: इन सभी को ठीक करने के लिए आगे पढ़ें ↓",
+  why_title:"ऑनलाइन सुरक्षा क्यों ज़रूरी है",
+  why_desc:"इंटरनेट एक शक्तिशाली उपकरण है — हम इसे पढ़ाई, गेम्स, चैटिंग और सीखने के लिए इस्तेमाल करते हैं। लेकिन इसमें हैकर्स, ऑनलाइन घोटाले, साइबरबुलिंग और वायरस जैसे खतरे भी हैं। स्मार्ट रहना ऑनलाइन और असल ज़िंदगी दोनों में सुरक्षित रखता है।",
+  risk1:"कमज़ोर खातों को निशाना बनाने वाले हैकर्स", risk2:"अच्छे ऑफर के रूप में छुपे ऑनलाइन घोटाले", risk3:"साइबरबुलिंग और उत्पीड़न", risk4:"वायरस और मैलवेयर संक्रमण",
+  why_note:"इसीलिए यह समझना ज़रूरी है कि खुद को और अपनी निजी जानकारी को कैसे सुरक्षित रखें। कुछ स्मार्ट आदतें बहुत मददगार होती हैं।",
+  scams_title:"असली घोटालों के उदाहरण", scams_desc:"ये काल्पनिक नहीं हैं — असल लोगों के साथ हर दिन होते हैं।",
+  scam1_tag:"⚠ फ़िशिंग", scam1_title:"नकली बैंक ईमेल", scam1_desc:'अहमद को एक ईमेल मिला जो उसके बैंक से लग रहा था, जिसमें लिंक पर क्लिक करके खाता "सत्यापित" करने को कहा गया था। उसने अपनी लॉगिन जानकारी डाल दी — अगले दिन उसका खाता खाली हो गया।',
+  scam2_tag:"⚠ ऑनलाइन शॉपिंग", scam2_title:"वह बैग जो कभी नहीं आया", scam2_desc:"सारा को एक वेबसाइट पर भारी छूट पर डिज़ाइनर बैग मिला। उसने $150 चुकाए, पर वह कभी नहीं पहुँचा। सपोर्ट से संपर्क करने पर वेबसाइट गायब हो चुकी थी।",
+  scam3_tag:"⚠ नकली नौकरी", scam3_title:'$100 की "ट्रेनिंग फीस"', scam3_desc:'लीना ने ऑनलाइन एक रिमोट जॉब के लिए आवेदन किया। नकली इंटरव्यू के बाद उसे बताया गया कि उसे नौकरी मिल गई है — लेकिन "ट्रेनिंग सामग्री" के लिए $100 देने होंगे। उसने पैसे दिए और फिर कभी जवाब नहीं मिला।',
+  ethics_title:"साइबर सुरक्षा की नैतिकता", ethics_desc:"सुरक्षा कौशल शक्तिशाली होते हैं — आप इन्हें कैसे इस्तेमाल करते हैं, यही तय करता है कि आप लोगों की रक्षा कर रहे हैं या उन्हें नुकसान पहुँचा रहे हैं।",
+  ethics1_title:"व्हाइट-हैट बनाम ब्लैक-हैट", ethics1_desc:"व्हाइट-हैट हैकर्स अनुमति लेकर कमज़ोरियाँ ढूँढकर उन्हें ठीक करते हैं। ब्लैक-हैट हैकर्स उन्हीं कमज़ोरियों का इस्तेमाल चोरी, जासूसी या नुकसान पहुँचाने के लिए करते हैं। नीयत और सहमति ही इन दोनों में अंतर करती है।",
+  ethics2_title:"दूसरों की निजता का सम्मान करें", ethics2_desc:"सिर्फ इसलिए कि आप किसी के संदेश, फोटो या खाते तक पहुँच सकते हैं, इसका मतलब यह नहीं कि आपको पहुँचना चाहिए। बिना सहमति के किसी का डेटा देखना एक उल्लंघन है, चाहे तकनीकी कौशल कुछ भी हो।",
+  ethics3_title:"ज्ञान हथियार नहीं है", ethics3_desc:"घोटाले और सुरक्षा खामियाँ कैसे काम करती हैं, यह सीखना बचाव के लिए है, हमला करने के लिए नहीं। इस ज्ञान का इस्तेमाल किसी को परेशान करने, पीछा करने या धमकाने के लिए करना एक सुरक्षा कौशल को हानिकारक बना देता है।",
+  ethics4_title:"ज़िम्मेदार खुलासा", ethics4_desc:"कोई असली सुरक्षा खामी मिली? उसका फायदा उठाने या सार्वजनिक करने की बजाय संबंधित कंपनी को बताएँ। नैतिक शोधकर्ता निजी तौर पर खुलासा करते हैं और टीम को ठीक करने का समय देते हैं।",
+  ethics5_title:"डिजिटल सहानुभूति", ethics5_desc:'साइबरबुलिंग, लीक हुई फोटो और डॉक्सिंग "सिर्फ ऑनलाइन" नहीं हैं — ये असली नुकसान पहुँचाते हैं। लोगों के साथ ऑनलाइन भी वही सम्मान करें जो आप आमने-सामने करते हैं।',
+  ethics6_title:"भरोसा बनाएँ, तोड़ें नहीं", ethics6_desc:"सबसे मज़बूत सुरक्षा संस्कृतियाँ भरोसे पर बनी होती हैं। ऑनलाइन आपका हर नैतिक फैसला उस भरोसे को मज़बूत करता है, कमज़ोर नहीं।",
+  stats_title:"असली आँकड़े और तथ्य", stats_desc:"2024 में वैश्विक घोटाला नुकसान $1 ट्रिलियन से अधिक हो गया — जो अधिकतर देशों की अर्थव्यवस्था से भी बड़ा है।",
+  stat1_label:"2024 में दुनिया भर के पीड़ित", stat2_label:"ऑनलाइन घोटालों से वैश्विक नुकसान", stat3_label:"FTC को रिपोर्ट किया गया अमेरिकी नुकसान", stat4_label:"रिपोर्ट किए गए डीपफेक हमले",
+  tips_title:"सुरक्षा सुझाव", tips_desc:"पाँच आदतें जो अधिकतर हमलों को शुरू होने से पहले ही रोक देती हैं।",
+  tip1_title:"मज़बूत, अनोखे पासवर्ड", tip1_desc:'बड़े-छोटे अक्षर, नंबर और चिन्ह मिलाएँ। "123456" या अपना नाम कभी इस्तेमाल न करें।',
+  tip2_title:"टू-फैक्टर ऑथेंटिकेशन", tip2_desc:"चोरी हुआ पासवर्ड भी बिना दूसरे कोड के काम नहीं करेगा।",
+  tip3_title:"एंटीवायरस सॉफ़्टवेयर", tip3_desc:"आपके डिवाइस को स्कैन करता है, खतरनाक साइटों की चेतावनी देता है, खतरनाक फ़ाइलों को रोकता है।",
+  tip4_title:"जानकारी निजी रखें", tip4_desc:"आपका पता, फोन नंबर और स्कूल का नाम अजनबियों के लिए नहीं है।",
+  tip5_title:"क्लिक करने से पहले सोचें", tip5_desc:"URL जाँचें। अगर कुछ बहुत ज़्यादा अच्छा लगे, तो शायद वह सच नहीं है।",
+  toolkit_title:"पासवर्ड टूलकिट", toolkit_desc:"अपने पासवर्ड की मजबूती जाँचें, या यहीं अपने ब्राउज़र में एक नया पासवर्ड बनाएँ।",
+  checker_title:"पासवर्ड मजबूती जाँचकर्ता", checker_desc:"अपना पासवर्ड टाइप करके देखें वह कितना मज़बूत है। कुछ भी कहीं नहीं भेजा जाता — यह पूरी तरह आपके डिवाइस पर चलता है।",
+  pw_placeholder:"जाँचने के लिए पासवर्ड लिखें...", strength_default:"ऊपर पासवर्ड दर्ज करें", strength_prefix:"मजबूती: ",
+  strength_weak:"कमज़ोर", strength_medium:"मध्यम", strength_strong:"मज़बूत", strength_verystrong:"बहुत मज़बूत",
+  rule_length:"कम से कम 8 अक्षर", rule_upper:"एक बड़ा अक्षर (A–Z)", rule_lower:"एक छोटा अक्षर (a–z)", rule_number:"एक नंबर (0–9)", rule_symbol:"एक विशेष चिन्ह (!, @, # आदि)",
+  checker_privacy:"यह पासवर्ड <strong>पूरी तरह आपके ब्राउज़र में</strong> जाँचा जाता है। इसे कभी भी सहेजा, लॉग या कहीं भेजा नहीं जाता — न हमें, न किसी सर्वर को। जाँच के तुरंत बाद इसे मिटा दिया जाता है।",
+  gen_title:"पासवर्ड जनरेटर", gen_desc:"अपनी चुनी हुई सेटिंग्स के अनुसार एक मज़बूत रैंडम पासवर्ड बनाएँ।",
+  gen_placeholder:"जनरेट करने के लिए क्लिक करें ↓", gen_length_label:"लंबाई",
+  opt_upper:"बड़े अक्षर शामिल करें (A–Z)", opt_lower:"छोटे अक्षर शामिल करें (a–z)", opt_numbers:"नंबर शामिल करें (0–9)", opt_symbols:"चिन्ह शामिल करें (!@#$%)",
+  gen_btn:"पासवर्ड जनरेट करें",
+  gen_privacy:"ऊपर सब कुछ आपके ब्राउज़र में लोकली चलता है। बनाए गए पासवर्ड <strong>कभी सहेजे, लॉग या कहीं भेजे नहीं जाते</strong> — न हमें, न किसी सर्वर को। पेज छोड़ते ही यह मिट जाता है।",
+  copy_msg:"क्लिपबोर्ड पर कॉपी हुआ — कहीं सहेजा नहीं गया।", select_option_msg:"कम से कम एक विकल्प चुनें",
+  quiz_title:"फ़िशिंग ईमेल पहचानें", quiz_desc:"क्या आप इसमें फँस जाएँगे?", quiz_question:"क्या यह ईमेल असली है या फ़िशिंग प्रयास?",
+  quiz_btn_legit:"असली लगता है", quiz_btn_phishing:"यह फ़िशिंग है",
+  quiz_correct:"✅ सही — गलत स्पेलिंग वाला डोमेन, जल्दबाज़ी और संदिग्ध लिंक फ़िशिंग के आम संकेत हैं।",
+  quiz_wrong:'🚩 असल में, यह फ़िशिंग है — "yourbnak-alerts.com" और तत्काल धमकी को ध्यान से देखें।',
+  checklist_title:"त्वरित सुरक्षा सारांश", checklist_desc:"हर पूरा होने पर टैप करें।",
+  check1:"मज़बूत, अनोखे पासवर्ड इस्तेमाल करें", check2:"टू-फैक्टर ऑथेंटिकेशन चालू करें", check3:"अपनी निजी जानकारी गुप्त रखें", check4:"क्लिक करते समय सावधान रहें", check5:"ज़रूरत पड़ने पर भरोसेमंद वयस्क से बात करें",
+  secured_word:"पूरा हुआ",
+  footer_email_placeholder:"you@email.com", footer_btn:"मुझे सूचित करें", footer_subscribed:"सब्सक्राइब हुआ ✓",
+  footer_copyright:"© 2026 Cyber Tech Guardians। स्मार्ट रहें, सुरक्षित रहें।",
+  lang_modal_title:"भाषा चुनें", lang_modal_sub:"जारी रखने के लिए अपनी भाषा चुनें",
+},
+es:{
+  nav_risks:"Riesgos", nav_scams:"Estafas", nav_ethics:"Ética", nav_stats:"Datos", nav_tips:"Consejos", nav_toolkit:"Herramientas", nav_quiz:"Quiz", nav_checklist:"Lista",
+  hero_eyebrow:"◆ CYBER TECH GUARDIANS PRESENTA", hero_title1:"MANTENTE SEGURO", hero_title2:"NAVEGA CON CONFIANZA",
+  hero_tagline:'"Asegura tu espacio, mantente a salvo en el ciberespacio" — defensa práctica y directa contra las estafas que realmente funcionan.',
+  hero_tagline_short:'"Asegura tu espacio, mantente a salvo en el ciberespacio"',
+  hero_cta:"APRENDE A ESTAR SEGURO →",
+  term_label:"threat_scan.sh — ejecutando",
+  term1:"$ iniciando escaneo...", term2:"$ verificando fortaleza de contraseña...", term2_status:"DÉBIL",
+  term3:"$ verificando estado de 2FA...", term3_status:"DESACTIVADO",
+  term4:"$ escaneando bandeja en busca de enlaces de phishing...", term4_status:"3 ENCONTRADOS",
+  term5:"$ recomendación: sigue leyendo para solucionar todo esto ↓",
+  why_title:"Por qué importa la seguridad en línea",
+  why_desc:"Internet es una herramienta poderosa — la usamos para estudiar, jugar, chatear y aprender. Pero también está lleno de riesgos como hackers, estafas, ciberacoso y virus. Ser inteligente en línea también te mantiene seguro en la vida real.",
+  risk1:"Hackers que atacan cuentas débiles", risk2:"Estafas en línea disfrazadas de buenas ofertas", risk3:"Ciberacoso y hostigamiento", risk4:"Infecciones de virus y malware",
+  why_note:"Por eso es importante entender cómo mantenerte a salvo y proteger tu información personal. Unos pocos hábitos inteligentes marcan una gran diferencia.",
+  scams_title:"Ejemplos reales de estafas", scams_desc:"No son hipotéticos — le pasan a personas reales todos los días.",
+  scam1_tag:"⚠ PHISHING", scam1_title:"El correo falso del banco", scam1_desc:'Ahmed recibió un correo que parecía ser de su banco, pidiéndole "verificar" su cuenta al hacer clic en un enlace. Ingresó sus datos de acceso — y al día siguiente su cuenta estaba vacía.',
+  scam2_tag:"⚠ COMPRAS EN LÍNEA", scam2_title:"El bolso que nunca llegó", scam2_desc:"Sarah encontró un bolso de diseñador en un sitio con grandes descuentos. Pagó $150, pero nunca llegó. Cuando intentó contactar soporte, el sitio ya no existía.",
+  scam3_tag:"⚠ OFERTA DE TRABAJO FALSA", scam3_title:'La "cuota de capacitación" de $100', scam3_desc:'Lina solicitó un trabajo remoto en línea. Tras una entrevista falsa, le dijeron que fue contratada — pero debía pagar $100 por "materiales de capacitación". Pagó y nunca más supo de ellos.',
+  ethics_title:"La ética de la ciberseguridad", ethics_desc:"Las habilidades de seguridad son poderosas — cómo las uses define si proteges a las personas o te aprovechas de ellas.",
+  ethics1_title:"Hacker de sombrero blanco vs. negro", ethics1_desc:"Los hackers de sombrero blanco encuentran fallas para repararlas, con permiso. Los de sombrero negro explotan esas mismas fallas para robar, espiar o dañar. La intención y el consentimiento marcan la diferencia.",
+  ethics2_title:"Respeta la privacidad de otros", ethics2_desc:"Que puedas acceder a los mensajes, fotos o cuentas de alguien no significa que debas hacerlo. Curiosear en los datos de otra persona sin su consentimiento es una violación, sin importar tu habilidad técnica.",
+  ethics3_title:"El conocimiento no es un arma", ethics3_desc:"Aprender cómo funcionan las estafas y vulnerabilidades es para defenderse, no para atacar. Usar ese conocimiento para acosar, espiar o extorsionar convierte una habilidad de seguridad en algo dañino.",
+  ethics4_title:"Divulgación responsable", ethics4_desc:"¿Encontraste una vulnerabilidad real? Repórtala a la empresa en lugar de explotarla o publicarla. Los investigadores éticos la divulgan en privado y dan tiempo para solucionarla.",
+  ethics5_title:"Empatía digital", ethics5_desc:'El ciberacoso, las fotos filtradas y el doxxing no son "solo en línea" — causan daño real. Trata a las personas en línea con el mismo respeto que les darías en persona.',
+  ethics6_title:"Construye confianza, no la rompas", ethics6_desc:"Las culturas de seguridad más sólidas se basan en la confianza. Cada elección ética que haces en línea refuerza esa confianza en lugar de erosionarla.",
+  stats_title:"Estadísticas y cifras reales", stats_desc:"Las pérdidas globales por estafas en 2024 superaron el billón de dólares — más que la mayoría de las economías nacionales.",
+  stat1_label:"Víctimas en todo el mundo, 2024", stat2_label:"Pérdidas globales por estafas en línea", stat3_label:"Pérdidas reportadas a la FTC en EE. UU.", stat4_label:"Ataques de deepfake reportados",
+  tips_title:"Consejos de seguridad", tips_desc:"Cinco hábitos que bloquean la mayoría de los ataques antes de que empiecen.",
+  tip1_title:"Contraseñas fuertes y únicas", tip1_desc:'Combina mayúsculas, minúsculas, números y símbolos. Nunca reutilices "123456" ni tu nombre.',
+  tip2_title:"Autenticación de dos factores", tip2_desc:"Incluso una contraseña robada no funcionará sin tu segundo código.",
+  tip3_title:"Software antivirus", tip3_desc:"Escanea tu dispositivo, advierte sobre sitios peligrosos, bloquea archivos dañinos.",
+  tip4_title:"Mantén tu información privada", tip4_desc:"Tu dirección, número de teléfono y nombre de escuela no son para extraños.",
+  tip5_title:"Piensa antes de hacer clic", tip5_desc:"Revisa la URL. Si parece demasiado bueno para ser verdad, probablemente lo sea.",
+  toolkit_title:"Kit de herramientas de contraseñas", toolkit_desc:"Comprueba qué tan fuerte es tu contraseña, o genera una nueva — aquí mismo en tu navegador.",
+  checker_title:"Verificador de fortaleza de contraseña", checker_desc:"Escribe una contraseña para ver qué tan segura es. Nada se envía a ningún lado — esto funciona completamente en tu dispositivo.",
+  pw_placeholder:"Escribe una contraseña para verificar...", strength_default:"Ingresa una contraseña arriba", strength_prefix:"Fortaleza: ",
+  strength_weak:"Débil", strength_medium:"Media", strength_strong:"Fuerte", strength_verystrong:"Muy fuerte",
+  rule_length:"Al menos 8 caracteres", rule_upper:"Una letra mayúscula (A–Z)", rule_lower:"Una letra minúscula (a–z)", rule_number:"Un número (0–9)", rule_symbol:"Un símbolo especial (!, @, #, etc.)",
+  checker_privacy:"Esta contraseña se verifica <strong>completamente en tu navegador</strong>. Nunca se guarda, registra ni transmite a ningún lugar — ni a nosotros, ni a un servidor. Se evalúa y se descarta de inmediato.",
+  gen_title:"Generador de contraseñas", gen_desc:"Crea una contraseña aleatoria fuerte según las opciones elegidas.",
+  gen_placeholder:"Haz clic en generar ↓", gen_length_label:"Longitud",
+  opt_upper:"Incluir mayúsculas (A–Z)", opt_lower:"Incluir minúsculas (a–z)", opt_numbers:"Incluir números (0–9)", opt_symbols:"Incluir símbolos (!@#$%)",
+  gen_btn:"GENERAR CONTRASEÑA",
+  gen_privacy:"Todo lo anterior se ejecuta localmente en tu navegador. Las contraseñas generadas <strong>nunca se guardan, registran ni se envían a ningún lugar</strong> — ni a nosotros, ni a un servidor, a ningún lugar. Al salir de esta página, desaparece.",
+  copy_msg:"Copiado al portapapeles — no se guardó en ningún lugar.", select_option_msg:"Selecciona al menos una opción",
+  quiz_title:"Detecta el correo de phishing", quiz_desc:"¿Caerías en la trampa?", quiz_question:"¿Este correo es legítimo o un intento de phishing?",
+  quiz_btn_legit:"Parece legítimo", quiz_btn_phishing:"Es phishing",
+  quiz_correct:"✅ Correcto — un dominio mal escrito, urgencia y un enlace sospechoso son señales clásicas de phishing.",
+  quiz_wrong:'🚩 En realidad, esto es phishing — fíjate bien en "yourbnak-alerts.com" y la amenaza urgente.',
+  checklist_title:"Resumen rápido de seguridad", checklist_desc:"Marca cada punto a medida que lo aseguras.",
+  check1:"Usa contraseñas fuertes y únicas", check2:"Activa la autenticación de dos factores", check3:"Mantén tu información personal privada", check4:"Ten cuidado dónde haces clic", check5:"Habla con un adulto de confianza cuando lo necesites",
+  secured_word:"ASEGURADO",
+  footer_email_placeholder:"tu@correo.com", footer_btn:"AVÍSAME", footer_subscribed:"SUSCRITO ✓",
+  footer_copyright:"© 2026 Cyber Tech Guardians. Sé inteligente, mantente seguro.",
+  lang_modal_title:"SELECCIONA UN IDIOMA", lang_modal_sub:"Elige tu idioma para continuar",
+},
+fr:{
+  nav_risks:"Risques", nav_scams:"Arnaques", nav_ethics:"Éthique", nav_stats:"Statistiques", nav_tips:"Conseils", nav_toolkit:"Outils", nav_quiz:"Quiz", nav_checklist:"Liste",
+  hero_eyebrow:"◆ CYBER TECH GUARDIANS PRÉSENTE", hero_title1:"RESTEZ EN SÉCURITÉ", hero_title2:"SURFEZ SEREINEMENT",
+  hero_tagline:'"Sécurisez votre espace, restez en sécurité dans le cyberespace" — une défense pratique contre les arnaques qui fonctionnent vraiment.',
+  hero_tagline_short:'"Sécurisez votre espace, restez en sécurité dans le cyberespace"',
+  hero_cta:"APPRENEZ À VOUS PROTÉGER →",
+  term_label:"threat_scan.sh — en cours",
+  term1:"$ initialisation du scan...", term2:"$ vérification de la force du mot de passe...", term2_status:"FAIBLE",
+  term3:"$ vérification du statut 2FA...", term3_status:"DÉSACTIVÉ",
+  term4:"$ analyse de la boîte de réception pour liens de phishing...", term4_status:"3 TROUVÉS",
+  term5:"$ recommandation : continuez la lecture pour tout corriger ↓",
+  why_title:"Pourquoi la sécurité en ligne compte",
+  why_desc:"Internet est un outil puissant — on l'utilise pour l'école, les jeux, discuter et apprendre. Mais il comporte aussi des risques : pirates, arnaques, cyberharcèlement et virus. Être malin en ligne, c'est aussi être en sécurité dans la vraie vie.",
+  risk1:"Pirates ciblant les comptes vulnérables", risk2:"Arnaques déguisées en bonnes affaires", risk3:"Cyberharcèlement", risk4:"Infections par virus et logiciels malveillants",
+  why_note:"C'est pourquoi il est important de savoir comment se protéger et protéger ses informations personnelles. Quelques bonnes habitudes suffisent souvent.",
+  scams_title:"Exemples réels d'arnaques", scams_desc:"Ce ne sont pas des cas hypothétiques — cela arrive tous les jours à de vraies personnes.",
+  scam1_tag:"⚠ PHISHING", scam1_title:"Le faux e-mail bancaire", scam1_desc:"Ahmed a reçu un e-mail qui semblait venir de sa banque, lui demandant de « vérifier » son compte en cliquant sur un lien. Il a saisi ses identifiants — le lendemain, son compte était vidé.",
+  scam2_tag:"⚠ ACHATS EN LIGNE", scam2_title:"Le sac qui n'est jamais arrivé", scam2_desc:"Sarah a trouvé un sac de créateur sur un site avec d'énormes réductions. Elle a payé 150 $, mais rien n'est arrivé. Le site avait disparu quand elle a voulu contacter le support.",
+  scam3_tag:"⚠ FAUSSE OFFRE D'EMPLOI", scam3_title:'Les 100 $ de « frais de formation »', scam3_desc:"Lina a postulé à un emploi à distance en ligne. Après un faux entretien, on lui a dit qu'elle était engagée — mais qu'elle devait payer 100 $ pour du « matériel de formation ». Elle a payé et n'a plus jamais eu de nouvelles.",
+  ethics_title:"L'éthique de la cybersécurité", ethics_desc:"Les compétences en sécurité sont puissantes — la manière dont vous les utilisez détermine si vous protégez les gens ou si vous en profitez.",
+  ethics1_title:"Chapeau blanc vs chapeau noir", ethics1_desc:"Les hackers « chapeau blanc » trouvent des failles pour les corriger, avec autorisation. Les « chapeau noir » exploitent ces mêmes failles pour voler, espionner ou nuire. L'intention et le consentement font toute la différence.",
+  ethics2_title:"Respectez la vie privée des autres", ethics2_desc:"Ce n'est pas parce que vous pouvez accéder aux messages, photos ou comptes de quelqu'un que vous devez le faire. Fouiller dans les données de quelqu'un sans consentement est une violation, peu importe vos compétences techniques.",
+  ethics3_title:"Le savoir n'est pas une arme", ethics3_desc:"Comprendre les arnaques et les failles sert à se défendre, pas à attaquer. Utiliser ces connaissances pour harceler, traquer ou extorquer transforme une compétence de sécurité en outil nuisible.",
+  ethics4_title:"Divulgation responsable", ethics4_desc:"Vous avez trouvé une vraie faille de sécurité ? Signalez-la à l'entreprise au lieu de l'exploiter ou de la publier. Les chercheurs éthiques la divulguent en privé et laissent le temps de la corriger.",
+  ethics5_title:"Empathie numérique", ethics5_desc:"Le cyberharcèlement, les photos divulguées et le doxxing ne sont pas « juste en ligne » — ils causent de réels dommages. Traitez les gens en ligne avec le même respect qu'en face à face.",
+  ethics6_title:"Construisez la confiance, ne la brisez pas", ethics6_desc:"Les cultures de sécurité les plus solides reposent sur la confiance. Chaque choix éthique que vous faites en ligne renforce cette confiance au lieu de l'éroder.",
+  stats_title:"Statistiques et chiffres réels", stats_desc:"Les pertes mondiales dues aux arnaques ont dépassé 1 000 milliards de dollars en 2024 — plus que la plupart des économies nationales.",
+  stat1_label:"Victimes dans le monde, 2024", stat2_label:"Pertes mondiales dues aux arnaques en ligne", stat3_label:"Pertes signalées à la FTC (États-Unis)", stat4_label:"Attaques par deepfake signalées",
+  tips_title:"Conseils de sécurité", tips_desc:"Cinq habitudes qui bloquent la plupart des attaques avant qu'elles ne commencent.",
+  tip1_title:"Mots de passe forts et uniques", tip1_desc:'Combinez majuscules, minuscules, chiffres et symboles. N\'utilisez jamais « 123456 » ou votre nom.',
+  tip2_title:"Authentification à deux facteurs", tip2_desc:"Même un mot de passe volé ne fonctionnera pas sans votre second code.",
+  tip3_title:"Logiciel antivirus", tip3_desc:"Analyse votre appareil, signale les sites dangereux, bloque les fichiers malveillants.",
+  tip4_title:"Gardez vos informations privées", tip4_desc:"Votre adresse, numéro de téléphone et nom d'école ne sont pas pour des inconnus.",
+  tip5_title:"Réfléchissez avant de cliquer", tip5_desc:"Vérifiez l'URL. Si c'est trop beau pour être vrai, ça l'est probablement.",
+  toolkit_title:"Boîte à outils mots de passe", toolkit_desc:"Vérifiez la solidité de votre mot de passe, ou générez-en un nouveau — directement dans votre navigateur.",
+  checker_title:"Vérificateur de force du mot de passe", checker_desc:"Tapez un mot de passe pour voir sa solidité. Rien n'est envoyé nulle part — tout fonctionne sur votre appareil.",
+  pw_placeholder:"Tapez un mot de passe à vérifier...", strength_default:"Saisissez un mot de passe ci-dessus", strength_prefix:"Force : ",
+  strength_weak:"Faible", strength_medium:"Moyen", strength_strong:"Fort", strength_verystrong:"Très fort",
+  rule_length:"Au moins 8 caractères", rule_upper:"Une majuscule (A–Z)", rule_lower:"Une minuscule (a–z)", rule_number:"Un chiffre (0–9)", rule_symbol:"Un symbole spécial (!, @, #, etc.)",
+  checker_privacy:"Ce mot de passe est vérifié <strong>entièrement dans votre navigateur</strong>. Il n'est jamais stocké, enregistré ni transmis nulle part — ni à nous, ni à un serveur. Il est évalué puis immédiatement supprimé.",
+  gen_title:"Générateur de mots de passe", gen_desc:"Créez un mot de passe aléatoire fort selon vos options.",
+  gen_placeholder:"Cliquez sur générer ↓", gen_length_label:"Longueur",
+  opt_upper:"Inclure des majuscules (A–Z)", opt_lower:"Inclure des minuscules (a–z)", opt_numbers:"Inclure des chiffres (0–9)", opt_symbols:"Inclure des symboles (!@#$%)",
+  gen_btn:"GÉNÉRER UN MOT DE PASSE",
+  gen_privacy:"Tout ce qui précède s'exécute localement dans votre navigateur. Les mots de passe générés ne sont <strong>jamais stockés, enregistrés ni envoyés nulle part</strong> — ni à nous, ni à un serveur, nulle part. Une fois la page quittée, il disparaît.",
+  copy_msg:"Copié dans le presse-papiers — non enregistré.", select_option_msg:"Sélectionnez au moins une option",
+  quiz_title:"Repérez l'e-mail de phishing", quiz_desc:"Vous laisseriez-vous prendre ?", quiz_question:"Cet e-mail est-il légitime ou une tentative de phishing ?",
+  quiz_btn_legit:"Semble légitime", quiz_btn_phishing:"C'est du phishing",
+  quiz_correct:"✅ Correct — domaine mal orthographié, urgence et lien suspect sont des signes classiques de phishing.",
+  quiz_wrong:'🚩 En réalité, c\'est du phishing — regardez bien « yourbnak-alerts.com » et la menace urgente.',
+  checklist_title:"Résumé rapide de sécurité", checklist_desc:"Cochez chaque point au fur et à mesure.",
+  check1:"Utilisez des mots de passe forts et uniques", check2:"Activez l'authentification à deux facteurs", check3:"Gardez vos informations personnelles privées", check4:"Faites attention où vous cliquez", check5:"Parlez à un adulte de confiance si besoin",
+  secured_word:"SÉCURISÉ",
+  footer_email_placeholder:"vous@email.com", footer_btn:"PRÉVENEZ-MOI", footer_subscribed:"ABONNÉ ✓",
+  footer_copyright:"© 2026 Cyber Tech Guardians. Restez malin, restez en sécurité.",
+  lang_modal_title:"CHOISISSEZ UNE LANGUE", lang_modal_sub:"Choisissez votre langue pour continuer",
+},
+ar:{
+  nav_risks:"المخاطر", nav_scams:"عمليات الاحتيال", nav_ethics:"الأخلاقيات", nav_stats:"الإحصائيات", nav_tips:"نصائح", nav_toolkit:"الأدوات", nav_quiz:"اختبار", nav_checklist:"القائمة",
+  hero_eyebrow:"◆ يقدم لكم CYBER TECH GUARDIANS", hero_title1:"ابقَ آمناً", hero_title2:"تصفّح بثقة",
+  hero_tagline:'"احمِ مساحتك، وابقَ آمناً في الفضاء الإلكتروني" — دفاع عملي وواضح ضد عمليات الاحتيال التي تنجح فعلاً.',
+  hero_tagline_short:'"احمِ مساحتك، وابقَ آمناً في الفضاء الإلكتروني"',
+  hero_cta:"تعرّف على كيفية البقاء آمناً ←",
+  term_label:"threat_scan.sh — قيد التشغيل",
+  term1:"$ جارٍ بدء الفحص...", term2:"$ جارٍ التحقق من قوة كلمة المرور...", term2_status:"ضعيفة",
+  term3:"$ جارٍ التحقق من حالة التحقق بخطوتين...", term3_status:"معطّلة",
+  term4:"$ جارٍ فحص البريد الوارد بحثاً عن روابط تصيّد...", term4_status:"تم العثور على 3",
+  term5:"$ التوصية: تابع القراءة لإصلاح كل ذلك ↓",
+  why_title:"لماذا تهم السلامة على الإنترنت",
+  why_desc:"الإنترنت أداة قوية — نستخدمها للدراسة والألعاب والدردشة والتعلّم. لكنه أيضاً مليء بالمخاطر مثل القراصنة، وعمليات الاحتيال، والتنمر الإلكتروني، والفيروسات. أن تكون ذكياً على الإنترنت يحميك في الحياة الواقعية أيضاً.",
+  risk1:"قراصنة يستهدفون الحسابات الضعيفة", risk2:"عمليات احتيال متنكرة بصورة عروض جيدة", risk3:"التنمر الإلكتروني والمضايقات", risk4:"إصابات بالفيروسات والبرمجيات الخبيثة",
+  why_note:"لهذا من المهم أن تفهم كيف تحمي نفسك ومعلوماتك الشخصية. بعض العادات الذكية تحدث فرقاً كبيراً.",
+  scams_title:"أمثلة حقيقية على الاحتيال", scams_desc:"هذه ليست افتراضية — إنها تحدث كل يوم لأناس حقيقيين.",
+  scam1_tag:"⚠ تصيّد إلكتروني", scam1_title:"رسالة البنك المزيفة", scam1_desc:'تلقّى أحمد بريداً إلكترونياً بدا وكأنه من بنكه، يطلب منه "التحقق" من حسابه بالضغط على رابط. أدخل بيانات دخوله — وفي اليوم التالي أُفرغ حسابه بالكامل.',
+  scam2_tag:"⚠ التسوّق عبر الإنترنت", scam2_title:"الحقيبة التي لم تصل أبداً", scam2_desc:"وجدت سارة حقيبة يد فاخرة على موقع يقدّم خصومات كبيرة. دفعت 150 دولاراً، لكنها لم تصل أبداً. وعندما حاولت التواصل مع خدمة العملاء، كان الموقع قد اختفى.",
+  scam3_tag:"⚠ عرض عمل وهمي", scam3_title:'"رسوم تدريب" بقيمة 100 دولار', scam3_desc:'تقدّمت لينا لوظيفة عن بُعد عبر الإنترنت. وبعد مقابلة وهمية، أُخبرت أنها حصلت على الوظيفة — لكن عليها دفع 100 دولار مقابل "مواد تدريبية". دفعت المبلغ ولم تسمع منهم مجدداً.',
+  ethics_title:"أخلاقيات الأمن السيبراني", ethics_desc:"مهارات الأمن قوية — وطريقة استخدامك لها تحدد ما إذا كنت تحمي الناس أو تستغلّهم.",
+  ethics1_title:"القبعة البيضاء مقابل القبعة السوداء", ethics1_desc:"قراصنة القبعة البيضاء يكتشفون الثغرات لإصلاحها، بإذن. أما قراصنة القبعة السوداء فيستغلون تلك الثغرات نفسها للسرقة أو التجسس أو إلحاق الضرر. النية والموافقة هما ما يفرّق بينهما.",
+  ethics2_title:"احترم خصوصية الآخرين", ethics2_desc:"مجرد قدرتك على الوصول إلى رسائل أو صور أو حسابات شخص ما لا يعني أنه يجب عليك ذلك. التلصص على بيانات شخص دون موافقته انتهاك، بغض النظر عن مهارتك التقنية.",
+  ethics3_title:"المعرفة ليست سلاحاً", ethics3_desc:"تعلّم كيفية عمل عمليات الاحتيال والثغرات هو من أجل الدفاع، وليس الهجوم. استخدام تلك المعرفة للمضايقة أو الملاحقة أو الابتزاز يحوّل مهارة أمنية إلى أداة ضرر.",
+  ethics4_title:"الإفصاح المسؤول", ethics4_desc:"وجدت ثغرة أمنية حقيقية؟ أبلغ الشركة بدلاً من استغلالها أو نشرها علناً. الباحثون الأخلاقيون يفصحون بشكل خاص ويمنحون الفرق وقتاً لإصلاحها.",
+  ethics5_title:"التعاطف الرقمي", ethics5_desc:'التنمر الإلكتروني وتسريب الصور ونشر المعلومات الشخصية ليست "مجرد أمور على الإنترنت" — بل تسبب ضرراً حقيقياً. عامل الناس على الإنترنت بنفس الاحترام الذي تمنحه لهم وجهاً لوجه.',
+  ethics6_title:"ابنِ الثقة، ولا تكسرها", ethics6_desc:"أقوى ثقافات الأمن تُبنى على الثقة. كل خيار أخلاقي تتخذه على الإنترنت يعزز تلك الثقة بدلاً من تآكلها.",
+  stats_title:"إحصائيات وأرقام حقيقية", stats_desc:"تجاوزت خسائر الاحتيال العالمية تريليون دولار في عام 2024 — أكبر من معظم اقتصادات الدول.",
+  stat1_label:"الضحايا حول العالم، 2024", stat2_label:"الخسائر العالمية من الاحتيال الإلكتروني", stat3_label:"الخسائر المبلّغ عنها للجنة التجارة الفيدرالية الأمريكية", stat4_label:"هجمات التزييف العميق المبلّغ عنها",
+  tips_title:"نصائح للسلامة", tips_desc:"خمس عادات توقف معظم الهجمات قبل أن تبدأ.",
+  tip1_title:"كلمات مرور قوية وفريدة", tip1_desc:'اجمع بين الأحرف الكبيرة والصغيرة والأرقام والرموز. لا تستخدم أبداً "123456" أو اسمك.',
+  tip2_title:"التحقق بخطوتين", tip2_desc:"حتى كلمة المرور المسروقة لن تنجح دون الرمز الثاني.",
+  tip3_title:"برنامج مكافحة الفيروسات", tip3_desc:"يفحص جهازك، ويحذّرك من المواقع الضارة، ويحظر الملفات الخطرة.",
+  tip4_title:"حافظ على خصوصية معلوماتك", tip4_desc:"عنوانك ورقم هاتفك واسم مدرستك ليست للغرباء.",
+  tip5_title:"فكّر قبل أن تنقر", tip5_desc:"تحقّق من الرابط. إذا بدا الأمر جيداً بشكل مبالغ فيه، فهو غالباً غير حقيقي.",
+  toolkit_title:"مجموعة أدوات كلمة المرور", toolkit_desc:"تحقّق من مدى قوة كلمة مرورك، أو أنشئ واحدة جديدة — هنا مباشرة في متصفحك.",
+  checker_title:"فاحص قوة كلمة المرور", checker_desc:"اكتب كلمة مرور لترى مدى قوتها. لا يُرسَل شيء إلى أي مكان — كل هذا يعمل بالكامل على جهازك.",
+  pw_placeholder:"اكتب كلمة مرور للتحقق منها...", strength_default:"أدخل كلمة مرور أعلاه", strength_prefix:"القوة: ",
+  strength_weak:"ضعيفة", strength_medium:"متوسطة", strength_strong:"قوية", strength_verystrong:"قوية جداً",
+  rule_length:"8 أحرف على الأقل", rule_upper:"حرف كبير واحد (A–Z)", rule_lower:"حرف صغير واحد (a–z)", rule_number:"رقم واحد (0–9)", rule_symbol:"رمز خاص واحد (!، @، # إلخ)",
+  checker_privacy:"يتم فحص كلمة المرور هذه <strong>بالكامل داخل متصفحك</strong>. لا يتم تخزينها أو تسجيلها أو إرسالها إلى أي مكان أبداً — لا إلينا ولا إلى أي خادم. يتم تقييمها والتخلص منها فوراً.",
+  gen_title:"مولّد كلمات المرور", gen_desc:"أنشئ كلمة مرور عشوائية قوية باستخدام الخيارات التي تحددها.",
+  gen_placeholder:"اضغط لإنشاء كلمة مرور ↓", gen_length_label:"الطول",
+  opt_upper:"تضمين أحرف كبيرة (A–Z)", opt_lower:"تضمين أحرف صغيرة (a–z)", opt_numbers:"تضمين أرقام (0–9)", opt_symbols:"تضمين رموز (!@#$%)",
+  gen_btn:"إنشاء كلمة مرور",
+  gen_privacy:"كل ما سبق يعمل محلياً داخل متصفحك. كلمات المرور المُنشأة <strong>لا يتم تخزينها أو تسجيلها أو إرسالها إلى أي مكان أبداً</strong> — لا إلينا ولا إلى أي خادم، ولا إلى أي جهة. بمجرد مغادرتك هذه الصفحة، تختفي تماماً.",
+  copy_msg:"تم النسخ إلى الحافظة — لم يُحفظ في أي مكان.", select_option_msg:"اختر خياراً واحداً على الأقل",
+  quiz_title:"اكتشف رسالة التصيّد الإلكتروني", quiz_desc:"هل كنت ستقع في الفخ؟", quiz_question:"هل هذا البريد الإلكتروني حقيقي أم محاولة تصيّد؟",
+  quiz_btn_legit:"يبدو حقيقياً", quiz_btn_phishing:"إنه تصيّد إلكتروني",
+  quiz_correct:"✅ صحيح — النطاق المكتوب بشكل خاطئ، والاستعجال، والرابط المريب علامات كلاسيكية على التصيّد الإلكتروني.",
+  quiz_wrong:'🚩 في الواقع، هذا تصيّد إلكتروني — انظر جيداً إلى "yourbnak-alerts.com" والتهديد العاجل.',
+  checklist_title:"ملخص سريع لنصائح السلامة", checklist_desc:"اضغط على كل عنصر عند إنجازه.",
+  check1:"استخدم كلمات مرور قوية وفريدة", check2:"فعّل التحقق بخطوتين", check3:"حافظ على خصوصية معلوماتك الشخصية", check4:"كن حذراً بشأن ما تنقر عليه", check5:"تحدث إلى شخص بالغ موثوق عند الحاجة",
+  secured_word:"تم التأمين",
+  footer_email_placeholder:"you@email.com", footer_btn:"أعلمني", footer_subscribed:"تم الاشتراك ✓",
+  footer_copyright:"© 2026 Cyber Tech Guardians. كن ذكياً، وابقَ آمناً.",
+  lang_modal_title:"اختر اللغة", lang_modal_sub:"اختر لغتك للمتابعة",
+},
+bn:{
+  nav_risks:"ঝুঁকি", nav_scams:"প্রতারণা", nav_ethics:"নীতিশাস্ত্র", nav_stats:"পরিসংখ্যান", nav_tips:"পরামর্শ", nav_toolkit:"টুলকিট", nav_quiz:"কুইজ", nav_checklist:"চেকলিস্ট",
+  hero_eyebrow:"◆ CYBER TECH GUARDIANS উপস্থাপন করছে", hero_title1:"নিরাপদ থাকুন", hero_title2:"নিশ্চিন্তে ব্রাউজ করুন",
+  hero_tagline:'"আপনার জায়গা সুরক্ষিত রাখুন, সাইবারস্পেসে নিরাপদ থাকুন" — বাস্তবে কার্যকর প্রতারণার বিরুদ্ধে ব্যবহারিক প্রতিরক্ষা।',
+  hero_tagline_short:'"আপনার জায়গা সুরক্ষিত রাখুন, সাইবারস্পেসে নিরাপদ থাকুন"',
+  hero_cta:"নিরাপদ থাকার উপায় জানুন →",
+  term_label:"threat_scan.sh — চলছে",
+  term1:"$ স্ক্যান শুরু হচ্ছে...", term2:"$ পাসওয়ার্ডের শক্তি যাচাই করা হচ্ছে...", term2_status:"দুর্বল",
+  term3:"$ 2FA অবস্থা যাচাই করা হচ্ছে...", term3_status:"বন্ধ",
+  term4:"$ ইনবক্সে ফিশিং লিঙ্ক খোঁজা হচ্ছে...", term4_status:"৩টি পাওয়া গেছে",
+  term5:"$ পরামর্শ: এই সব সমাধানের জন্য পড়তে থাকুন ↓",
+  why_title:"কেন অনলাইন নিরাপত্তা গুরুত্বপূর্ণ",
+  why_desc:"ইন্টারনেট একটি শক্তিশালী মাধ্যম — আমরা এটি পড়াশোনা, গেম, চ্যাট এবং শেখার জন্য ব্যবহার করি। কিন্তু এতে হ্যাকার, প্রতারণা, সাইবারবুলিং এবং ভাইরাসের মতো ঝুঁকিও রয়েছে। অনলাইনে বুদ্ধিমান হওয়া বাস্তব জীবনেও আপনাকে নিরাপদ রাখে।",
+  risk1:"দুর্বল অ্যাকাউন্ট লক্ষ্য করে হ্যাকাররা", risk2:"ভালো অফারের ছদ্মবেশে অনলাইন প্রতারণা", risk3:"সাইবারবুলিং ও হয়রানি", risk4:"ভাইরাস ও ম্যালওয়্যার সংক্রমণ",
+  why_note:"তাই নিজেকে ও ব্যক্তিগত তথ্য সুরক্ষিত রাখার উপায় জানা গুরুত্বপূর্ণ। কিছু বুদ্ধিদীপ্ত অভ্যাস অনেক সাহায্য করে।",
+  scams_title:"বাস্তব প্রতারণার উদাহরণ", scams_desc:"এগুলো কাল্পনিক নয় — প্রতিদিন বাস্তব মানুষের সাথে ঘটে।",
+  scam1_tag:"⚠ ফিশিং", scam1_title:"ভুয়া ব্যাংক ইমেইল", scam1_desc:'আহমেদ একটি ইমেইল পান যা তার ব্যাংকের মতো দেখতে ছিল, লিঙ্কে ক্লিক করে অ্যাকাউন্ট "যাচাই" করতে বলা হয়। সে লগইন তথ্য দিয়েছিল — পরের দিন তার অ্যাকাউন্ট খালি হয়ে যায়।',
+  scam2_tag:"⚠ অনলাইন শপিং", scam2_title:"ব্যাগ যা কখনো আসেনি", scam2_desc:"সারা একটি সাইটে বিশাল ছাড়ে ডিজাইনার ব্যাগ পান। তিনি $150 দেন, কিন্তু ব্যাগ কখনো আসেনি। সাপোর্টে যোগাযোগ করতে গিয়ে দেখেন ওয়েবসাইটটি উধাও।",
+  scam3_tag:"⚠ ভুয়া চাকরি", scam3_title:'$100 "প্রশিক্ষণ ফি"', scam3_desc:'লিনা অনলাইনে একটি রিমোট চাকরির জন্য আবেদন করেন। একটি ভুয়া সাক্ষাৎকারের পর তাকে বলা হয় সে চাকরি পেয়েছে — কিন্তু "প্রশিক্ষণ সামগ্রী"র জন্য $100 দিতে হবে। সে টাকা দেয়, এরপর আর কোনো সাড়া পায়নি।',
+  ethics_title:"সাইবার নিরাপত্তার নীতিশাস্ত্র", ethics_desc:"নিরাপত্তা দক্ষতা শক্তিশালী — আপনি এটি কীভাবে ব্যবহার করেন তা নির্ধারণ করে আপনি মানুষকে রক্ষা করছেন নাকি ক্ষতি করছেন।",
+  ethics1_title:"হোয়াইট-হ্যাট বনাম ব্ল্যাক-হ্যাট", ethics1_desc:"হোয়াইট-হ্যাট হ্যাকাররা অনুমতি নিয়ে দুর্বলতা খুঁজে তা ঠিক করে। ব্ল্যাক-হ্যাট হ্যাকাররা একই দুর্বলতা ব্যবহার করে চুরি, গুপ্তচরবৃত্তি বা ক্ষতি করে। উদ্দেশ্য ও সম্মতিই দুইয়ের পার্থক্য গড়ে দেয়।",
+  ethics2_title:"অন্যের গোপনীয়তাকে সম্মান করুন", ethics2_desc:"আপনি কারো বার্তা, ছবি বা অ্যাকাউন্টে প্রবেশ করতে পারেন মানেই যে করা উচিত তা নয়। সম্মতি ছাড়া কারো তথ্য দেখা একটি লঙ্ঘন, প্রযুক্তিগত দক্ষতা যাই হোক না কেন।",
+  ethics3_title:"জ্ঞান কোনো অস্ত্র নয়", ethics3_desc:"প্রতারণা ও দুর্বলতা কীভাবে কাজ করে তা শেখা প্রতিরক্ষার জন্য, আক্রমণের জন্য নয়। এই জ্ঞান ব্যবহার করে কাউকে হয়রানি, অনুসরণ বা প্রতারণা করা একটি নিরাপত্তা দক্ষতাকে ক্ষতিকর করে তোলে।",
+  ethics4_title:"দায়িত্বশীল প্রকাশ", ethics4_desc:"সত্যিকারের নিরাপত্তা দুর্বলতা খুঁজে পেয়েছেন? এটি ব্যবহার বা প্রকাশ্যে জানানোর বদলে কোম্পানিকে জানান। নৈতিক গবেষকরা ব্যক্তিগতভাবে জানান এবং দল ঠিক করার সময় দেন।",
+  ethics5_title:"ডিজিটাল সহানুভূতি", ethics5_desc:'সাইবারবুলিং, ফাঁস হওয়া ছবি এবং ডক্সিং "শুধু অনলাইনে" নয় — এগুলো বাস্তব ক্ষতি করে। অনলাইনে মানুষের সাথে মুখোমুখি যতটা সম্মান দেখান, ততটাই দেখান।',
+  ethics6_title:"বিশ্বাস তৈরি করুন, ভাঙবেন না", ethics6_desc:"সবচেয়ে শক্তিশালী নিরাপত্তা সংস্কৃতি বিশ্বাসের উপর গড়ে ওঠে। অনলাইনে আপনার প্রতিটি নৈতিক সিদ্ধান্ত সেই বিশ্বাসকে শক্তিশালী করে।",
+  stats_title:"প্রকৃত পরিসংখ্যান ও তথ্য", stats_desc:"২০২৪ সালে বিশ্বব্যাপী প্রতারণার ক্ষতি ১ ট্রিলিয়ন ডলার ছাড়িয়ে যায় — যা বেশিরভাগ দেশের অর্থনীতির চেয়েও বড়।",
+  stat1_label:"২০২৪ সালে বিশ্বব্যাপী ভুক্তভোগী", stat2_label:"অনলাইন প্রতারণায় বৈশ্বিক ক্ষতি", stat3_label:"FTC-তে রিপোর্ট করা মার্কিন ক্ষতি", stat4_label:"রিপোর্ট করা ডিপফেক আক্রমণ",
+  tips_title:"নিরাপত্তা টিপস", tips_desc:"পাঁচটি অভ্যাস যা বেশিরভাগ আক্রমণ শুরু হওয়ার আগেই থামিয়ে দেয়।",
+  tip1_title:"শক্তিশালী, অনন্য পাসওয়ার্ড", tip1_desc:'বড় হাতের, ছোট হাতের অক্ষর, সংখ্যা ও চিহ্ন মিশিয়ে ব্যবহার করুন। কখনো "123456" বা নিজের নাম ব্যবহার করবেন না।',
+  tip2_title:"দ্বি-স্তর যাচাইকরণ", tip2_desc:"চুরি হওয়া পাসওয়ার্ডও দ্বিতীয় কোড ছাড়া কাজ করবে না।",
+  tip3_title:"অ্যান্টিভাইরাস সফটওয়্যার", tip3_desc:"আপনার ডিভাইস স্ক্যান করে, ক্ষতিকর সাইট সম্পর্কে সতর্ক করে, বিপজ্জনক ফাইল ব্লক করে।",
+  tip4_title:"তথ্য গোপন রাখুন", tip4_desc:"আপনার ঠিকানা, ফোন নম্বর ও স্কুলের নাম অপরিচিতদের জন্য নয়।",
+  tip5_title:"ক্লিক করার আগে ভাবুন", tip5_desc:"URL যাচাই করুন। যদি খুব ভালো মনে হয়, তবে হয়তো তা সত্যি নয়।",
+  toolkit_title:"পাসওয়ার্ড টুলকিট", toolkit_desc:"আপনার পাসওয়ার্ড কতটা শক্তিশালী তা যাচাই করুন, অথবা এখানেই ব্রাউজারে নতুন একটি তৈরি করুন।",
+  checker_title:"পাসওয়ার্ড শক্তি যাচাইকারী", checker_desc:"একটি পাসওয়ার্ড লিখে দেখুন এটি কতটা শক্তিশালী। কিছুই কোথাও পাঠানো হয় না — এটি সম্পূর্ণভাবে আপনার ডিভাইসে চলে।",
+  pw_placeholder:"যাচাই করার জন্য পাসওয়ার্ড লিখুন...", strength_default:"উপরে একটি পাসওয়ার্ড লিখুন", strength_prefix:"শক্তি: ",
+  strength_weak:"দুর্বল", strength_medium:"মাঝারি", strength_strong:"শক্তিশালী", strength_verystrong:"অত্যন্ত শক্তিশালী",
+  rule_length:"অন্তত ৮ অক্ষর", rule_upper:"একটি বড় হাতের অক্ষর (A–Z)", rule_lower:"একটি ছোট হাতের অক্ষর (a–z)", rule_number:"একটি সংখ্যা (０–９)", rule_symbol:"একটি বিশেষ চিহ্ন (!, @, # ইত্যাদি)",
+  checker_privacy:"এই পাসওয়ার্ড <strong>সম্পূর্ণভাবে আপনার ব্রাউজারে</strong> যাচাই করা হয়। এটি কখনো সংরক্ষণ, লগ বা কোথাও পাঠানো হয় না — আমাদের কাছেও না, কোনো সার্ভারেও না। যাচাইয়ের সাথে সাথেই এটি মুছে ফেলা হয়।",
+  gen_title:"পাসওয়ার্ড জেনারেটর", gen_desc:"আপনার নির্বাচিত অপশন অনুযায়ী একটি শক্তিশালী র‍্যান্ডম পাসওয়ার্ড তৈরি করুন।",
+  gen_placeholder:"তৈরি করতে ক্লিক করুন ↓", gen_length_label:"দৈর্ঘ্য",
+  opt_upper:"বড় হাতের অক্ষর অন্তর্ভুক্ত করুন (A–Z)", opt_lower:"ছোট হাতের অক্ষর অন্তর্ভুক্ত করুন (a–z)", opt_numbers:"সংখ্যা অন্তর্ভুক্ত করুন (0–9)", opt_symbols:"চিহ্ন অন্তর্ভুক্ত করুন (!@#$%)",
+  gen_btn:"পাসওয়ার্ড তৈরি করুন",
+  gen_privacy:"উপরের সবকিছু আপনার ব্রাউজারে স্থানীয়ভাবে চলে। তৈরি হওয়া পাসওয়ার্ড <strong>কখনো সংরক্ষণ, লগ বা কোথাও পাঠানো হয় না</strong> — আমাদের কাছেও না, কোনো সার্ভারেও না। পাতা ছেড়ে গেলেই এটি হারিয়ে যায়।",
+  copy_msg:"ক্লিপবোর্ডে কপি হয়েছে — কোথাও সংরক্ষণ করা হয়নি।", select_option_msg:"অন্তত একটি অপশন নির্বাচন করুন",
+  quiz_title:"ফিশিং ইমেইল চিহ্নিত করুন", quiz_desc:"আপনি কি ধরা পড়তেন?", quiz_question:"এই ইমেইলটি আসল নাকি ফিশিং প্রচেষ্টা?",
+  quiz_btn_legit:"আসল মনে হচ্ছে", quiz_btn_phishing:"এটি ফিশিং",
+  quiz_correct:"✅ সঠিক — ভুল বানানের ডোমেইন, তাড়াহুড়ো এবং সন্দেহজনক লিঙ্ক ফিশিংয়ের সাধারণ লক্ষণ।",
+  quiz_wrong:'🚩 আসলে, এটি ফিশিং — "yourbnak-alerts.com" এবং জরুরি হুমকিটি ভালো করে দেখুন।',
+  checklist_title:"দ্রুত নিরাপত্তা সারসংক্ষেপ", checklist_desc:"প্রতিটি সম্পন্ন হলে ট্যাপ করুন।",
+  check1:"শক্তিশালী, অনন্য পাসওয়ার্ড ব্যবহার করুন", check2:"দ্বি-স্তর যাচাইকরণ চালু করুন", check3:"ব্যক্তিগত তথ্য গোপন রাখুন", check4:"ক্লিক করার সময় সতর্ক থাকুন", check5:"প্রয়োজনে বিশ্বস্ত প্রাপ্তবয়স্কের সাথে কথা বলুন",
+  secured_word:"সুরক্ষিত",
+  footer_email_placeholder:"you@email.com", footer_btn:"আমাকে জানান", footer_subscribed:"সাবস্ক্রাইব হয়েছে ✓",
+  footer_copyright:"© 2026 Cyber Tech Guardians। বুদ্ধিমান থাকুন, নিরাপদ থাকুন।",
+  lang_modal_title:"ভাষা নির্বাচন করুন", lang_modal_sub:"চালিয়ে যেতে আপনার ভাষা নির্বাচন করুন",
+},
+pt:{
+  nav_risks:"Riscos", nav_scams:"Golpes", nav_ethics:"Ética", nav_stats:"Dados", nav_tips:"Dicas", nav_toolkit:"Ferramentas", nav_quiz:"Quiz", nav_checklist:"Lista",
+  hero_eyebrow:"◆ CYBER TECH GUARDIANS APRESENTA", hero_title1:"MANTENHA-SE SEGURO", hero_title2:"NAVEGUE COM CONFIANÇA",
+  hero_tagline:'"Proteja seu espaço, fique seguro no ciberespaço" — defesa prática e direta contra os golpes que realmente funcionam.',
+  hero_tagline_short:'"Proteja seu espaço, fique seguro no ciberespaço"',
+  hero_cta:"APRENDA A FICAR SEGURO →",
+  term_label:"threat_scan.sh — em execução",
+  term1:"$ iniciando verificação...", term2:"$ verificando força da senha...", term2_status:"FRACA",
+  term3:"$ verificando status do 2FA...", term3_status:"DESATIVADO",
+  term4:"$ verificando caixa de entrada por links de phishing...", term4_status:"3 ENCONTRADOS",
+  term5:"$ recomendação: continue lendo para corrigir tudo isso ↓",
+  why_title:"Por que a segurança online importa",
+  why_desc:"A internet é uma ferramenta poderosa — usamos para estudar, jogar, conversar e aprender. Mas também está cheia de riscos como hackers, golpes, cyberbullying e vírus. Ser inteligente online também te mantém seguro na vida real.",
+  risk1:"Hackers atacando contas fracas", risk2:"Golpes disfarçados de boas ofertas", risk3:"Cyberbullying e assédio", risk4:"Infecções por vírus e malware",
+  why_note:"Por isso é importante entender como se proteger e proteger suas informações pessoais. Alguns hábitos inteligentes fazem muita diferença.",
+  scams_title:"Exemplos reais de golpes", scams_desc:"Não são hipotéticos — acontecem todos os dias com pessoas reais.",
+  scam1_tag:"⚠ PHISHING", scam1_title:"O e-mail falso do banco", scam1_desc:'Ahmed recebeu um e-mail que parecia ser do banco, pedindo para "verificar" a conta clicando em um link. Ele inseriu seus dados de login — e no dia seguinte sua conta estava vazia.',
+  scam2_tag:"⚠ COMPRAS ONLINE", scam2_title:"A bolsa que nunca chegou", scam2_desc:"Sarah encontrou uma bolsa de grife em um site com grandes descontos. Pagou $150, mas nunca chegou. Quando tentou contatar o suporte, o site havia sumido.",
+  scam3_tag:"⚠ VAGA FALSA", scam3_title:'A "taxa de treinamento" de $100', scam3_desc:'Lina se candidatou a um emprego remoto online. Após uma entrevista falsa, disseram que ela foi contratada — mas precisava pagar $100 por "materiais de treinamento". Ela pagou e nunca mais teve notícias.',
+  ethics_title:"A ética da cibersegurança", ethics_desc:"Habilidades de segurança são poderosas — como você as usa define se está protegendo pessoas ou se aproveitando delas.",
+  ethics1_title:"Hacker do bem vs. hacker do mal", ethics1_desc:"Hackers éticos (white-hat) encontram falhas para corrigi-las, com permissão. Hackers maliciosos (black-hat) exploram essas mesmas falhas para roubar, espionar ou causar dano. Intenção e consentimento fazem a diferença.",
+  ethics2_title:"Respeite a privacidade dos outros", ethics2_desc:"Só porque você pode acessar mensagens, fotos ou contas de alguém não significa que deva. Bisbilhotar dados de alguém sem consentimento é uma violação, independentemente da habilidade técnica.",
+  ethics3_title:"Conhecimento não é uma arma", ethics3_desc:"Aprender como golpes e falhas funcionam serve para defesa, não ataque. Usar esse conhecimento para assediar, perseguir ou extorquir transforma uma habilidade de segurança em algo prejudicial.",
+  ethics4_title:"Divulgação responsável", ethics4_desc:"Encontrou uma falha de segurança real? Reporte à empresa em vez de explorá-la ou publicá-la. Pesquisadores éticos divulgam em particular e dão tempo para a correção.",
+  ethics5_title:"Empatia digital", ethics5_desc:'Cyberbullying, fotos vazadas e doxxing não são "apenas online" — causam dano real. Trate as pessoas online com o mesmo respeito que teria pessoalmente.',
+  ethics6_title:"Construa confiança, não a destrua", ethics6_desc:"As culturas de segurança mais fortes são construídas sobre confiança. Cada escolha ética que você faz online reforça essa confiança, em vez de corroê-la.",
+  stats_title:"Estatísticas e números reais", stats_desc:"As perdas globais com golpes em 2024 ultrapassaram US$ 1 trilhão — mais que a maioria das economias nacionais.",
+  stat1_label:"Vítimas no mundo todo, 2024", stat2_label:"Perdas globais com golpes online", stat3_label:"Perdas relatadas à FTC dos EUA", stat4_label:"Ataques de deepfake relatados",
+  tips_title:"Dicas de segurança", tips_desc:"Cinco hábitos que bloqueiam a maioria dos ataques antes que comecem.",
+  tip1_title:"Senhas fortes e únicas", tip1_desc:'Combine maiúsculas, minúsculas, números e símbolos. Nunca reutilize "123456" ou seu nome.',
+  tip2_title:"Autenticação de dois fatores", tip2_desc:"Mesmo uma senha roubada não funcionará sem o segundo código.",
+  tip3_title:"Software antivírus", tip3_desc:"Verifica seu dispositivo, alerta sobre sites perigosos, bloqueia arquivos maliciosos.",
+  tip4_title:"Mantenha suas informações privadas", tip4_desc:"Seu endereço, telefone e nome da escola não são para estranhos.",
+  tip5_title:"Pense antes de clicar", tip5_desc:"Verifique a URL. Se parece bom demais para ser verdade, provavelmente é.",
+  toolkit_title:"Kit de ferramentas de senha", toolkit_desc:"Verifique a força da sua senha, ou gere uma nova — direto no seu navegador.",
+  checker_title:"Verificador de força de senha", checker_desc:"Digite uma senha para ver como ela se sai. Nada é enviado a lugar nenhum — funciona totalmente no seu dispositivo.",
+  pw_placeholder:"Digite uma senha para verificar...", strength_default:"Digite uma senha acima", strength_prefix:"Força: ",
+  strength_weak:"Fraca", strength_medium:"Média", strength_strong:"Forte", strength_verystrong:"Muito forte",
+  rule_length:"Pelo menos 8 caracteres", rule_upper:"Uma letra maiúscula (A–Z)", rule_lower:"Uma letra minúscula (a–z)", rule_number:"Um número (0–9)", rule_symbol:"Um símbolo especial (!, @, #, etc.)",
+  checker_privacy:"Esta senha é verificada <strong>inteiramente no seu navegador</strong>. Nunca é armazenada, registrada ou transmitida a lugar nenhum — nem para nós, nem para um servidor. É avaliada e descartada imediatamente.",
+  gen_title:"Gerador de senhas", gen_desc:"Crie uma senha aleatória forte usando as opções escolhidas.",
+  gen_placeholder:"Clique em gerar ↓", gen_length_label:"Comprimento",
+  opt_upper:"Incluir maiúsculas (A–Z)", opt_lower:"Incluir minúsculas (a–z)", opt_numbers:"Incluir números (0–9)", opt_symbols:"Incluir símbolos (!@#$%)",
+  gen_btn:"GERAR SENHA",
+  gen_privacy:"Tudo acima é executado localmente no seu navegador. Senhas geradas <strong>nunca são armazenadas, registradas ou enviadas a lugar nenhum</strong> — nem para nós, nem para um servidor, nenhum lugar. Ao sair desta página, ela desaparece.",
+  copy_msg:"Copiado para a área de transferência — não salvo em nenhum lugar.", select_option_msg:"Selecione ao menos uma opção",
+  quiz_title:"Identifique o e-mail de phishing", quiz_desc:"Você cairia nessa?", quiz_question:"Este e-mail é legítimo ou uma tentativa de phishing?",
+  quiz_btn_legit:"Parece legítimo", quiz_btn_phishing:"É phishing",
+  quiz_correct:"✅ Correto — domínio com erro de ortografia, urgência e link suspeito são sinais clássicos de phishing.",
+  quiz_wrong:'🚩 Na verdade, isso é phishing — repare bem em "yourbnak-alerts.com" e na ameaça urgente.',
+  checklist_title:"Resumo rápido de segurança", checklist_desc:"Marque cada item conforme for garantindo.",
+  check1:"Use senhas fortes e únicas", check2:"Ative a autenticação de dois fatores", check3:"Mantenha suas informações pessoais privadas", check4:"Tenha cuidado onde clica", check5:"Fale com um adulto de confiança quando necessário",
+  secured_word:"PROTEGIDO",
+  footer_email_placeholder:"voce@email.com", footer_btn:"AVISE-ME", footer_subscribed:"INSCRITO ✓",
+  footer_copyright:"© 2026 Cyber Tech Guardians. Seja esperto, fique seguro.",
+  lang_modal_title:"SELECIONE O IDIOMA", lang_modal_sub:"Escolha seu idioma para continuar",
+},
+ru:{
+  nav_risks:"Риски", nav_scams:"Мошенничество", nav_ethics:"Этика", nav_stats:"Статистика", nav_tips:"Советы", nav_toolkit:"Инструменты", nav_quiz:"Тест", nav_checklist:"Чек-лист",
+  hero_eyebrow:"◆ CYBER TECH GUARDIANS ПРЕДСТАВЛЯЕТ", hero_title1:"ОСТАВАЙТЕСЬ В БЕЗОПАСНОСТИ", hero_title2:"СЁРФИТЕ УВЕРЕННО",
+  hero_tagline:'"Защитите своё пространство, будьте в безопасности в киберпространстве" — практичная защита от мошенничества, которое действительно работает.',
+  hero_tagline_short:'"Защитите своё пространство, будьте в безопасности в киберпространстве"',
+  hero_cta:"УЗНАТЬ, КАК ОСТАВАТЬСЯ В БЕЗОПАСНОСТИ →",
+  term_label:"threat_scan.sh — выполняется",
+  term1:"$ инициализация сканирования...", term2:"$ проверка надёжности пароля...", term2_status:"СЛАБЫЙ",
+  term3:"$ проверка статуса 2FA...", term3_status:"ОТКЛЮЧЕНО",
+  term4:"$ сканирование почты на фишинговые ссылки...", term4_status:"НАЙДЕНО 3",
+  term5:"$ рекомендация: читайте дальше, чтобы всё это исправить ↓",
+  why_title:"Почему важна безопасность в сети",
+  why_desc:"Интернет — мощный инструмент: мы используем его для учёбы, игр, общения и обучения. Но он также полон рисков — хакеры, мошенничество, кибербуллинг и вирусы. Быть осторожным онлайн — значит быть в безопасности и в реальной жизни.",
+  risk1:"Хакеры, атакующие слабые аккаунты", risk2:"Мошенничество под видом выгодных предложений", risk3:"Кибербуллинг и травля", risk4:"Заражение вирусами и вредоносным ПО",
+  why_note:"Поэтому важно понимать, как защитить себя и свою личную информацию. Несколько разумных привычек имеют большое значение.",
+  scams_title:"Реальные примеры мошенничества", scams_desc:"Это не гипотетические ситуации — они случаются с реальными людьми каждый день.",
+  scam1_tag:"⚠ ФИШИНГ", scam1_title:"Поддельное письмо от банка", scam1_desc:'Ахмед получил письмо, похожее на письмо от банка, с просьбой «подтвердить» аккаунт по ссылке. Он ввёл свои данные для входа — и на следующий день его счёт был опустошён.',
+  scam2_tag:"⚠ ОНЛАЙН-ПОКУПКИ", scam2_title:"Сумка, которая так и не пришла", scam2_desc:"Сара нашла дизайнерскую сумку на сайте с огромными скидками. Она заплатила $150, но товар так и не пришёл. Когда она попыталась связаться со службой поддержки, сайт уже исчез.",
+  scam3_tag:"⚠ ФЕЙКОВАЯ ВАКАНСИЯ", scam3_title:'«Плата за обучение» в $100', scam3_desc:'Лина откликнулась на удалённую вакансию онлайн. После фиктивного собеседования ей сказали, что она принята — но нужно заплатить $100 за «учебные материалы». Она заплатила и больше никогда не получила ответа.',
+  ethics_title:"Этика кибербезопасности", ethics_desc:"Навыки безопасности — это сила. То, как вы их используете, определяет, защищаете вы людей или наживаетесь на них.",
+  ethics1_title:"Белые хакеры против чёрных", ethics1_desc:"«Белые» хакеры находят уязвимости, чтобы их исправить, с разрешения. «Чёрные» хакеры используют те же уязвимости для кражи, слежки или вреда. Намерение и согласие — вот что их различает.",
+  ethics2_title:"Уважайте чужую приватность", ethics2_desc:"То, что вы можете получить доступ к чьим-то сообщениям, фото или аккаунтам, не значит, что вы должны это делать. Просмотр чужих данных без согласия — нарушение, независимо от технических навыков.",
+  ethics3_title:"Знание — не оружие", ethics3_desc:"Изучение того, как работают мошенничество и уязвимости, нужно для защиты, а не для атаки. Использование этих знаний для преследования, слежки или вымогательства превращает навык безопасности во вредный инструмент.",
+  ethics4_title:"Ответственное раскрытие", ethics4_desc:"Нашли настоящую уязвимость? Сообщите об этом компании вместо того, чтобы использовать её или публиковать. Этичные исследователи сообщают об этом приватно и дают время на исправление.",
+  ethics5_title:"Цифровая эмпатия", ethics5_desc:'Кибербуллинг, утечка фото и деанонимизация — это не «просто в интернете», это причиняет реальный вред. Относитесь к людям онлайн с тем же уважением, что и лично.',
+  ethics6_title:"Стройте доверие, а не разрушайте его", ethics6_desc:"Самая сильная культура безопасности строится на доверии. Каждый этичный выбор, который вы делаете онлайн, укрепляет это доверие, а не подрывает его.",
+  stats_title:"Реальная статистика и цифры", stats_desc:"Мировые потери от мошенничества в 2024 году превысили 1 триллион долларов — больше, чем экономика большинства стран.",
+  stat1_label:"Жертвы по всему миру, 2024", stat2_label:"Мировые потери от онлайн-мошенничества", stat3_label:"Потери в США, заявленные в FTC", stat4_label:"Зафиксированные атаки с дипфейками",
+  tips_title:"Советы по безопасности", tips_desc:"Пять привычек, которые останавливают большинство атак ещё до начала.",
+  tip1_title:"Надёжные, уникальные пароли", tip1_desc:'Сочетайте заглавные и строчные буквы, цифры и символы. Никогда не используйте «123456» или своё имя.',
+  tip2_title:"Двухфакторная аутентификация", tip2_desc:"Даже украденный пароль не сработает без второго кода.",
+  tip3_title:"Антивирусное ПО", tip3_desc:"Сканирует устройство, предупреждает об опасных сайтах, блокирует опасные файлы.",
+  tip4_title:"Держите информацию в тайне", tip4_desc:"Ваш адрес, номер телефона и название школы — не для посторонних.",
+  tip5_title:"Думайте, прежде чем нажать", tip5_desc:"Проверяйте URL-адрес. Если что-то выглядит слишком хорошо, чтобы быть правдой — вероятно, так и есть.",
+  toolkit_title:"Набор инструментов для паролей", toolkit_desc:"Проверьте, насколько надёжен ваш пароль, или сгенерируйте новый — прямо здесь, в браузере.",
+  checker_title:"Проверка надёжности пароля", checker_desc:"Введите пароль, чтобы увидеть его надёжность. Ничего никуда не отправляется — всё работает полностью на вашем устройстве.",
+  pw_placeholder:"Введите пароль для проверки...", strength_default:"Введите пароль выше", strength_prefix:"Надёжность: ",
+  strength_weak:"Слабый", strength_medium:"Средний", strength_strong:"Сильный", strength_verystrong:"Очень сильный",
+  rule_length:"Минимум 8 символов", rule_upper:"Одна заглавная буква (A–Z)", rule_lower:"Одна строчная буква (a–z)", rule_number:"Одна цифра (0–9)", rule_symbol:"Один спецсимвол (!, @, # и т.д.)",
+  checker_privacy:"Этот пароль проверяется <strong>полностью в вашем браузере</strong>. Он никогда не сохраняется, не логируется и никуда не передаётся — ни нам, ни на сервер. Он оценивается и сразу удаляется.",
+  gen_title:"Генератор паролей", gen_desc:"Создайте надёжный случайный пароль по выбранным параметрам.",
+  gen_placeholder:"Нажмите «сгенерировать» ↓", gen_length_label:"Длина",
+  opt_upper:"Включить заглавные буквы (A–Z)", opt_lower:"Включить строчные буквы (a–z)", opt_numbers:"Включить цифры (0–9)", opt_symbols:"Включить символы (!@#$%)",
+  gen_btn:"СГЕНЕРИРОВАТЬ ПАРОЛЬ",
+  gen_privacy:"Всё вышеперечисленное работает локально в вашем браузере. Сгенерированные пароли <strong>никогда не сохраняются, не логируются и никуда не отправляются</strong> — ни нам, ни на сервер, никуда. При выходе со страницы пароль исчезает.",
+  copy_msg:"Скопировано в буфер обмена — нигде не сохранено.", select_option_msg:"Выберите хотя бы один вариант",
+  quiz_title:"Распознайте фишинговое письмо", quiz_desc:"Попались бы вы на это?", quiz_question:"Это письмо настоящее или попытка фишинга?",
+  quiz_btn_legit:"Выглядит настоящим", quiz_btn_phishing:"Это фишинг",
+  quiz_correct:"✅ Верно — домен с опечаткой, срочность и подозрительная ссылка — классические признаки фишинга.",
+  quiz_wrong:'🚩 На самом деле это фишинг — присмотритесь к «yourbnak-alerts.com» и срочной угрозе.',
+  checklist_title:"Краткая сводка по безопасности", checklist_desc:"Отмечайте каждый пункт по мере выполнения.",
+  check1:"Используйте надёжные, уникальные пароли", check2:"Включите двухфакторную аутентификацию", check3:"Держите личную информацию в тайне", check4:"Будьте осторожны с кликами", check5:"При необходимости поговорите с доверенным взрослым",
+  secured_word:"ЗАЩИЩЕНО",
+  footer_email_placeholder:"you@email.com", footer_btn:"УВЕДОМИТЬ МЕНЯ", footer_subscribed:"ПОДПИСАНО ✓",
+  footer_copyright:"© 2026 Cyber Tech Guardians. Будьте разумны, будьте в безопасности.",
+  lang_modal_title:"ВЫБЕРИТЕ ЯЗЫК", lang_modal_sub:"Выберите язык, чтобы продолжить",
+},
+ur:{
+  nav_risks:"خطرات", nav_scams:"فراڈ", nav_ethics:"اخلاقیات", nav_stats:"اعداد و شمار", nav_tips:"تجاویز", nav_toolkit:"ٹول کٹ", nav_quiz:"کوئز", nav_checklist:"فہرست",
+  hero_eyebrow:"◆ CYBER TECH GUARDIANS پیش کرتا ہے", hero_title1:"محفوظ رہیں", hero_title2:"اعتماد سے براؤز کریں",
+  hero_tagline:'"اپنی جگہ محفوظ رکھیں، سائبر اسپیس میں محفوظ رہیں" — ان فراڈز کے خلاف عملی اور واضح دفاع جو واقعی کارآمد ہوتے ہیں۔',
+  hero_tagline_short:'"اپنی جگہ محفوظ رکھیں، سائبر اسپیس میں محفوظ رہیں"',
+  hero_cta:"محفوظ رہنے کا طریقہ سیکھیں ←",
+  term_label:"threat_scan.sh — چل رہا ہے",
+  term1:"$ اسکین شروع ہو رہا ہے...", term2:"$ پاس ورڈ کی مضبوطی چیک کی جا رہی ہے...", term2_status:"کمزور",
+  term3:"$ 2FA کی حالت چیک کی جا رہی ہے...", term3_status:"غیر فعال",
+  term4:"$ ان باکس میں فشنگ لنکس تلاش کیے جا رہے ہیں...", term4_status:"3 ملے",
+  term5:"$ تجویز: یہ سب ٹھیک کرنے کے لیے آگے پڑھیں ↓",
+  why_title:"آن لائن حفاظت کیوں اہم ہے",
+  why_desc:"انٹرنیٹ ایک طاقتور ذریعہ ہے — ہم اسے پڑھائی، گیمز، چیٹنگ اور سیکھنے کے لیے استعمال کرتے ہیں۔ لیکن یہ ہیکرز، آن لائن فراڈ، سائبر بُلنگ اور وائرس جیسے خطرات سے بھی بھرا ہوا ہے۔ آن لائن سمجھداری اصل زندگی میں بھی آپ کو محفوظ رکھتی ہے۔",
+  risk1:"کمزور اکاؤنٹس کو نشانہ بنانے والے ہیکرز", risk2:"اچھی ڈیل کے روپ میں چھپے آن لائن فراڈ", risk3:"سائبر بُلنگ اور ہراسانی", risk4:"وائرس اور میلویئر انفیکشن",
+  why_note:"اسی لیے یہ سمجھنا ضروری ہے کہ خود کو اور اپنی ذاتی معلومات کو کیسے محفوظ رکھا جائے۔ چند سمجھدار عادات بہت مددگار ثابت ہوتی ہیں۔",
+  scams_title:"حقیقی فراڈ کی مثالیں", scams_desc:"یہ فرضی نہیں ہیں — یہ حقیقی لوگوں کے ساتھ روزانہ ہوتے ہیں۔",
+  scam1_tag:"⚠ فشنگ", scam1_title:"جعلی بینک ای میل", scam1_desc:'احمد کو ایک ای میل ملا جو اس کے بینک کی طرف سے لگ رہا تھا، جس میں لنک پر کلک کر کے اکاؤنٹ "تصدیق" کرنے کو کہا گیا تھا۔ اس نے لاگ اِن معلومات درج کر دیں — اگلے دن اس کا اکاؤنٹ خالی ہو چکا تھا۔',
+  scam2_tag:"⚠ آن لائن شاپنگ", scam2_title:"بیگ جو کبھی نہیں پہنچا", scam2_desc:"سارہ کو ایک ویب سائٹ پر بھاری رعایت پر ڈیزائنر بیگ ملا۔ اس نے $150 ادا کیے، لیکن وہ کبھی نہیں پہنچا۔ سپورٹ سے رابطہ کرنے پر ویب سائٹ غائب ہو چکی تھی۔",
+  scam3_tag:"⚠ جعلی نوکری", scam3_title:'$100 کی "تربیتی فیس"', scam3_desc:'لینا نے آن لائن ایک ریموٹ نوکری کے لیے درخواست دی۔ جعلی انٹرویو کے بعد اسے بتایا گیا کہ اسے نوکری مل گئی ہے — لیکن "تربیتی مواد" کے لیے $100 دینا ہوں گے۔ اس نے رقم ادا کی اور پھر کبھی جواب نہیں ملا۔',
+  ethics_title:"سائبر سیکیورٹی کی اخلاقیات", ethics_desc:"حفاظتی مہارتیں طاقتور ہوتی ہیں — آپ انہیں کیسے استعمال کرتے ہیں یہی طے کرتا ہے کہ آپ لوگوں کی حفاظت کر رہے ہیں یا انہیں نقصان پہنچا رہے ہیں۔",
+  ethics1_title:"وائٹ ہیٹ بمقابلہ بلیک ہیٹ", ethics1_desc:"وائٹ ہیٹ ہیکرز اجازت کے ساتھ خامیاں تلاش کر کے انہیں ٹھیک کرتے ہیں۔ بلیک ہیٹ ہیکرز انہی خامیوں کو چوری، جاسوسی یا نقصان پہنچانے کے لیے استعمال کرتے ہیں۔ نیت اور رضامندی ہی دونوں میں فرق ہے۔",
+  ethics2_title:"دوسروں کی رازداری کا احترام کریں", ethics2_desc:"صرف اس لیے کہ آپ کسی کے پیغامات، تصاویر یا اکاؤنٹس تک رسائی رکھتے ہیں، اس کا مطلب یہ نہیں کہ آپ کو ایسا کرنا چاہیے۔ رضامندی کے بغیر کسی کا ڈیٹا دیکھنا خلاف ورزی ہے، چاہے تکنیکی مہارت کچھ بھی ہو۔",
+  ethics3_title:"علم ہتھیار نہیں ہے", ethics3_desc:"فراڈ اور خامیاں کیسے کام کرتی ہیں یہ سیکھنا دفاع کے لیے ہے، حملے کے لیے نہیں۔ اس علم کو کسی کو ہراساں کرنے، پیچھا کرنے یا بلیک میل کرنے کے لیے استعمال کرنا ایک حفاظتی مہارت کو نقصان دہ بنا دیتا ہے۔",
+  ethics4_title:"ذمہ دارانہ انکشاف", ethics4_desc:"کوئی حقیقی سیکیورٹی خامی ملی؟ اسے استعمال کرنے یا عوامی طور پر شائع کرنے کے بجائے کمپنی کو بتائیں۔ اخلاقی محققین نجی طور پر انکشاف کرتے ہیں اور ٹیم کو ٹھیک کرنے کا وقت دیتے ہیں۔",
+  ethics5_title:"ڈیجیٹل ہمدردی", ethics5_desc:'سائبر بُلنگ، لیک شدہ تصاویر اور ذاتی معلومات افشا کرنا "صرف آن لائن" نہیں ہے — یہ حقیقی نقصان پہنچاتے ہیں۔ آن لائن لوگوں کے ساتھ وہی احترام برتیں جو آپ آمنے سامنے کرتے ہیں۔',
+  ethics6_title:"اعتماد بنائیں، توڑیں نہیں", ethics6_desc:"سب سے مضبوط حفاظتی ثقافتیں اعتماد پر قائم ہوتی ہیں۔ آن لائن آپ کا ہر اخلاقی فیصلہ اس اعتماد کو مضبوط کرتا ہے، کمزور نہیں۔",
+  stats_title:"حقیقی اعداد و شمار", stats_desc:"2024 میں عالمی فراڈ کے نقصانات 1 ٹریلین ڈالر سے تجاوز کر گئے — جو اکثر ممالک کی معیشت سے بھی زیادہ ہے۔",
+  stat1_label:"2024 میں دنیا بھر کے متاثرین", stat2_label:"آن لائن فراڈ سے عالمی نقصانات", stat3_label:"FTC کو رپورٹ ہونے والے امریکی نقصانات", stat4_label:"رپورٹ ہونے والے ڈیپ فیک حملے",
+  tips_title:"حفاظتی تجاویز", tips_desc:"پانچ عادات جو زیادہ تر حملوں کو شروع ہونے سے پہلے ہی روک دیتی ہیں۔",
+  tip1_title:"مضبوط اور منفرد پاس ورڈز", tip1_desc:'بڑے اور چھوٹے حروف، نمبرز اور علامات ملائیں۔ کبھی بھی "123456" یا اپنا نام استعمال نہ کریں۔',
+  tip2_title:"دو مرحلہ تصدیق", tip2_desc:"چوری شدہ پاس ورڈ بھی دوسرے کوڈ کے بغیر کام نہیں کرے گا۔",
+  tip3_title:"اینٹی وائرس سافٹ ویئر", tip3_desc:"آپ کے آلے کو اسکین کرتا ہے، خطرناک سائٹس سے خبردار کرتا ہے، خطرناک فائلوں کو روکتا ہے۔",
+  tip4_title:"معلومات نجی رکھیں", tip4_desc:"آپ کا پتہ، فون نمبر اور اسکول کا نام اجنبیوں کے لیے نہیں ہے۔",
+  tip5_title:"کلک کرنے سے پہلے سوچیں", tip5_desc:"URL چیک کریں۔ اگر کچھ حد سے زیادہ اچھا لگے، تو شاید وہ سچ نہیں ہے۔",
+  toolkit_title:"پاس ورڈ ٹول کٹ", toolkit_desc:"اپنے پاس ورڈ کی مضبوطی چیک کریں، یا یہیں اپنے براؤزر میں ایک نیا بنائیں۔",
+  checker_title:"پاس ورڈ مضبوطی چیکر", checker_desc:"پاس ورڈ لکھ کر دیکھیں یہ کتنا مضبوط ہے۔ کچھ بھی کہیں نہیں بھیجا جاتا — یہ مکمل طور پر آپ کے آلے پر چلتا ہے۔",
+  pw_placeholder:"چیک کرنے کے لیے پاس ورڈ لکھیں...", strength_default:"اوپر پاس ورڈ درج کریں", strength_prefix:"مضبوطی: ",
+  strength_weak:"کمزور", strength_medium:"درمیانہ", strength_strong:"مضبوط", strength_verystrong:"بہت مضبوط",
+  rule_length:"کم از کم 8 حروف", rule_upper:"ایک بڑا حرف (A–Z)", rule_lower:"ایک چھوٹا حرف (a–z)", rule_number:"ایک نمبر (0–9)", rule_symbol:"ایک خاص علامت (!، @، # وغیرہ)",
+  checker_privacy:"یہ پاس ورڈ <strong>مکمل طور پر آپ کے براؤزر میں</strong> چیک کیا جاتا ہے۔ یہ کبھی محفوظ، ریکارڈ یا کہیں بھیجا نہیں جاتا — نہ ہمیں، نہ کسی سرور کو۔ چیک ہوتے ہی فوراً حذف کر دیا جاتا ہے۔",
+  gen_title:"پاس ورڈ جنریٹر", gen_desc:"اپنی منتخب کردہ ترتیبات کے مطابق ایک مضبوط رینڈم پاس ورڈ بنائیں۔",
+  gen_placeholder:"بنانے کے لیے کلک کریں ↓", gen_length_label:"لمبائی",
+  opt_upper:"بڑے حروف شامل کریں (A–Z)", opt_lower:"چھوٹے حروف شامل کریں (a–z)", opt_numbers:"نمبرز شامل کریں (0–9)", opt_symbols:"علامات شامل کریں (!@#$%)",
+  gen_btn:"پاس ورڈ بنائیں",
+  gen_privacy:"اوپر کی ہر چیز آپ کے براؤزر میں مقامی طور پر چلتی ہے۔ بنائے گئے پاس ورڈز <strong>کبھی محفوظ، ریکارڈ یا کہیں بھیجے نہیں جاتے</strong> — نہ ہمیں، نہ کسی سرور کو۔ یہ صفحہ چھوڑتے ہی ختم ہو جاتا ہے۔",
+  copy_msg:"کلپ بورڈ پر کاپی ہو گیا — کہیں محفوظ نہیں کیا گیا۔", select_option_msg:"کم از کم ایک آپشن منتخب کریں",
+  quiz_title:"فشنگ ای میل پہچانیں", quiz_desc:"کیا آپ اس کے جھانسے میں آ جاتے؟", quiz_question:"کیا یہ ای میل اصلی ہے یا فشنگ کی کوشش؟",
+  quiz_btn_legit:"اصلی لگتا ہے", quiz_btn_phishing:"یہ فشنگ ہے",
+  quiz_correct:"✅ درست — غلط ہجے والا ڈومین، عجلت اور مشکوک لنک فشنگ کی عام علامات ہیں۔",
+  quiz_wrong:'🚩 دراصل، یہ فشنگ ہے — "yourbnak-alerts.com" اور فوری دھمکی کو غور سے دیکھیں۔',
+  checklist_title:"فوری حفاظتی خلاصہ", checklist_desc:"ہر چیز مکمل ہونے پر ٹیپ کریں۔",
+  check1:"مضبوط اور منفرد پاس ورڈز استعمال کریں", check2:"دو مرحلہ تصدیق آن کریں", check3:"اپنی ذاتی معلومات نجی رکھیں", check4:"کلک کرتے وقت محتاط رہیں", check5:"ضرورت پڑنے پر کسی قابل اعتماد بالغ سے بات کریں",
+  secured_word:"محفوظ",
+  footer_email_placeholder:"you@email.com", footer_btn:"مجھے آگاہ کریں", footer_subscribed:"سبسکرائب ہو گیا ✓",
+  footer_copyright:"© 2026 Cyber Tech Guardians۔ سمجھدار رہیں، محفوظ رہیں۔",
+  lang_modal_title:"زبان منتخب کریں", lang_modal_sub:"جاری رکھنے کے لیے اپنی زبان منتخب کریں",
+},
+};
+
+let currentLang = null; // in-memory only, no localStorage
+
+/* Apply bold markup safely for a small whitelist of keys */
+function applyHTML(el, html){
+  el.innerHTML = html;
+}
+
+function setLanguage(code){
+  currentLang = code;
+  const dict = translations[code] || translations.en;
+  const langMeta = LANGS.find(l=>l.code===code) || LANGS[0];
+
+  // direction + fonts
+  const root = document.getElementById('htmlRoot');
+  root.setAttribute('lang', code);
+  root.setAttribute('dir', langMeta.dir);
+  const fonts = FONT_STACKS[code] || FONT_STACKS.en;
+  root.style.setProperty('--sans', fonts.sans);
+  root.style.setProperty('--mono', fonts.mono);
+
+  // plain text nodes
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    if(dict[key] !== undefined) el.textContent = dict[key];
+  });
+  // html-allowed nodes (bold tags etc.)
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{
+    const key = el.getAttribute('data-i18n-html');
+    if(dict[key] !== undefined) applyHTML(el, dict[key]);
+  });
+  // placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+    const key = el.getAttribute('data-i18n-placeholder');
+    if(dict[key] !== undefined) el.setAttribute('placeholder', dict[key]);
+  });
+  // values
+  document.querySelectorAll('[data-i18n-value]').forEach(el=>{
+    const key = el.getAttribute('data-i18n-value');
+    if(dict[key] !== undefined && !el.dataset.userGenerated) el.value = dict[key];
+  });
+
+  // lang switcher button label
+  document.getElementById('langBtnLabel').textContent = langMeta.native;
+
+  // rebuild lang switcher menu (mark active)
+  buildLangMenu();
+
+  // update progress text + strength label + quiz feedback if empty (dynamic re-render)
+  refreshDynamicText();
+}
+
+function buildLangMenu(){
+  const menu = document.getElementById('langSwitcherMenu');
+  menu.innerHTML = '';
+  LANGS.forEach(l=>{
+    const btn = document.createElement('button');
+    btn.className = 'langOption' + (l.code === currentLang ? ' active' : '');
+    btn.type = 'button';
+    btn.innerHTML = '<span>'+l.native+'</span>' + (l.code === currentLang ? '<span>✓</span>' : '');
+    btn.addEventListener('click', ()=>{
+      setLanguage(l.code);
+      menu.classList.remove('open');
+    });
+    menu.appendChild(btn);
+  });
+}
+
+function buildLangModal(){
+  const grid = document.getElementById('langGrid');
+  grid.innerHTML = '';
+  LANGS.forEach(l=>{
+    const item = document.createElement('div');
+    item.className = 'lang-item';
+    item.innerHTML = '<span class="native">'+l.native+'</span><span class="en">'+l.code.toUpperCase()+'</span>';
+    item.addEventListener('click', ()=>{
+      setLanguage(l.code);
+      document.getElementById('langModal').style.display = 'none';
+    });
+    grid.appendChild(item);
+  });
+}
+
+function refreshDynamicText(){
+  const dict = translations[currentLang] || translations.en;
+  // checklist progress
+  const done = document.querySelectorAll('.check.done').length;
+  const total = document.querySelectorAll('.check').length;
+  const progressText = document.getElementById('progressText');
+  if(progressText) progressText.textContent = done + ' / ' + total + ' ' + dict.secured_word;
+
+  // password strength label (only reset if input empty)
+  const pwInput = document.getElementById('pwCheckInput');
+  const strengthLabel = document.getElementById('strengthLabel');
+  if(pwInput && strengthLabel && pwInput.value.length === 0){
+    strengthLabel.textContent = dict.strength_default;
+  } else if(pwInput && strengthLabel){
+    pwInput.dispatchEvent(new Event('input'));
+  }
+}
+
+/* =========================================================
+   PAGE INIT
+========================================================= */
+buildLangModal();
+setLanguage('en'); // default text before user picks, modal still shown
+
+document.getElementById('langSwitcherBtn').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  document.getElementById('langSwitcherMenu').classList.toggle('open');
+});
+document.addEventListener('click', ()=>{
+  document.getElementById('langSwitcherMenu').classList.remove('open');
+});
+
+// Scroll reveal
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); revealObserver.unobserve(e.target); } });
+}, { threshold: 0.15 });
+revealEls.forEach(el=>revealObserver.observe(el));
+
+// Terminal lines stagger-in
+document.querySelectorAll('#termBody .line').forEach((line, i)=>{
+  line.style.transition = 'opacity .4s ease';
+  setTimeout(()=>{ line.style.opacity = 1; }, 400 + i*450);
+});
+
+// Nav scrollspy
+const navA = document.querySelectorAll('#navlinks a');
+const sections = [...navA].map(a=>document.querySelector(a.getAttribute('href')));
+const spyObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    const id = '#'+entry.target.id;
+    const link = [...navA].find(a=>a.getAttribute('href')===id);
+    if(entry.isIntersecting && link){
+      navA.forEach(a=>a.classList.remove('active'));
+      link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-40% 0px -50% 0px' });
+sections.forEach(s=> s && spyObserver.observe(s));
+
+// Animated counters
+function formatNumber(target, opts){
+  if(opts.format === 'comma') return Math.round(target).toLocaleString();
+  if(opts.decimal) return target.toFixed(1);
+  return Math.round(target).toString();
+}
+const counters = document.querySelectorAll('.num');
+const counterObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting) return;
+    const el = entry.target;
+    const target = parseFloat(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    const dollar = el.dataset.dollar === 'true';
+    const decimal = el.dataset.decimal === 'true';
+    const format = el.dataset.format;
+    const duration = 1400;
+    const startTime = performance.now();
+    function tick(now){
+      const progress = Math.min((now-startTime)/duration, 1);
+      const eased = 1 - Math.pow(1-progress, 3);
+      const current = target * eased;
+      el.textContent = (dollar ? '$' : '') + formatNumber(current, {decimal, format}) + suffix;
+      if(progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+    counterObserver.unobserve(el);
+  });
+}, { threshold: 0.4 });
+counters.forEach(c=>counterObserver.observe(c));
+
+// Quiz
+function quizAnswer(correct){
+  const dict = translations[currentLang] || translations.en;
+  const fb = document.getElementById('quizFeedback');
+  if(correct){
+    fb.textContent = dict.quiz_correct;
+    fb.className = 'quiz-feedback correct';
+  } else {
+    fb.textContent = dict.quiz_wrong;
+    fb.className = 'quiz-feedback wrong';
+  }
+}
+
+// Checklist
+const checks = document.querySelectorAll('.check');
+const fill = document.getElementById('progressFill');
+function updateProgress(){
+  const dict = translations[currentLang] || translations.en;
+  const done = document.querySelectorAll('.check.done').length;
+  fill.style.width = (done/checks.length*100) + '%';
+  document.getElementById('progressText').textContent = done + ' / ' + checks.length + ' ' + dict.secured_word;
+}
+checks.forEach(c=>{
+  c.addEventListener('click', ()=>{ c.classList.toggle('done'); updateProgress(); });
+});
+
+// ---------- PASSWORD STRENGTH CHECKER ----------
+const pwInput = document.getElementById('pwCheckInput');
+const pwToggleBtn = document.getElementById('pwToggleBtn');
+const strengthFill = document.getElementById('strengthFill');
+const strengthLabel = document.getElementById('strengthLabel');
+const rulesList = document.getElementById('rulesList');
+
+pwToggleBtn.addEventListener('click', ()=>{
+  const isPw = pwInput.type === 'password';
+  pwInput.type = isPw ? 'text' : 'password';
+  pwToggleBtn.textContent = isPw ? '🙈' : '👁';
+});
+
+function evaluatePassword(pw){
+  const rules = {
+    length: pw.length >= 8,
+    upper: /[A-Z]/.test(pw),
+    lower: /[a-z]/.test(pw),
+    number: /[0-9]/.test(pw),
+    symbol: /[^A-Za-z0-9]/.test(pw)
+  };
+  const metCount = Object.values(rules).filter(Boolean).length;
+  return { rules, metCount };
+}
+
+pwInput.addEventListener('input', ()=>{
+  const dict = translations[currentLang] || translations.en;
+  const pw = pwInput.value;
+  const { rules, metCount } = evaluatePassword(pw);
+
+  [...rulesList.children].forEach(li=>{
+    const key = li.dataset.rule;
+    const met = rules[key];
+    li.classList.toggle('met', met);
+    li.querySelector('.rule-box').textContent = met ? '✓' : '–';
+  });
+
+  if(pw.length === 0){
+    strengthFill.style.width = '0%';
+    strengthFill.style.background = 'var(--danger)';
+    strengthLabel.textContent = dict.strength_default;
+    return;
+  }
+
+  let score = metCount;
+  if(pw.length >= 12) score += 0.5;
+  if(pw.length >= 16) score += 0.5;
+
+  let pct, label, color;
+  if(score <= 1.5){ pct = 20; label = dict.strength_weak; color = '#ff6b6b'; }
+  else if(score <= 3){ pct = 45; label = dict.strength_medium; color = '#ffb454'; }
+  else if(score <= 4.5){ pct = 75; label = dict.strength_strong; color = '#4fd8e8'; }
+  else { pct = 100; label = dict.strength_verystrong; color = '#4fd8e8'; }
+
+  strengthFill.style.width = pct + '%';
+  strengthFill.style.background = color;
+  strengthLabel.textContent = dict.strength_prefix + label;
+});
+
+// ---------- PASSWORD GENERATOR ----------
+const lenSlider = document.getElementById('lenSlider');
+const lenValue = document.getElementById('lenValue');
+const optUpper = document.getElementById('optUpper');
+const optLower = document.getElementById('optLower');
+const optNumbers = document.getElementById('optNumbers');
+const optSymbols = document.getElementById('optSymbols');
+const generateBtn = document.getElementById('generateBtn');
+const genOutput = document.getElementById('genOutput');
+const copyBtn = document.getElementById('copyBtn');
+const copyMsg = document.getElementById('copyMsg');
+
+lenSlider.addEventListener('input', ()=>{ lenValue.textContent = lenSlider.value; });
+
+const CHARSETS = {
+  upper: 'ABCDEFGHJKLMNPQRSTUVWXYZ',
+  lower: 'abcdefghijkmnpqrstuvwxyz',
+  numbers: '23456789',
+  symbols: '!@#$%^&*()-_=+?'
+};
+
+function generatePassword(){
+  const dict = translations[currentLang] || translations.en;
+  const length = parseInt(lenSlider.value, 10);
+  let pool = '';
+  const required = [];
+
+  if(optUpper.checked){ pool += CHARSETS.upper; required.push(CHARSETS.upper); }
+  if(optLower.checked){ pool += CHARSETS.lower; required.push(CHARSETS.lower); }
+  if(optNumbers.checked){ pool += CHARSETS.numbers; required.push(CHARSETS.numbers); }
+  if(optSymbols.checked){ pool += CHARSETS.symbols; required.push(CHARSETS.symbols); }
+
+  genOutput.dataset.userGenerated = "true";
+
+  if(pool === ''){
+    genOutput.value = dict.select_option_msg;
+    return;
+  }
+
+  function randomChar(charset){
+    const arr = new Uint32Array(1);
+    crypto.getRandomValues(arr);
+    return charset[arr[0] % charset.length];
+  }
+
+  let passwordChars = required.map(set => randomChar(set));
+  while(passwordChars.length < length){
+    passwordChars.push(randomChar(pool));
+  }
+  for(let i = passwordChars.length - 1; i > 0; i--){
+    const randomValue = new Uint32Array(1);
+    crypto.getRandomValues(randomValue);
+    const j = randomValue[0] % (i+1);
+    [passwordChars[i], passwordChars[j]] = [passwordChars[j], passwordChars[i]];
+  }
+  passwordChars = passwordChars.slice(0, length);
+
+  genOutput.value = passwordChars.join('');
+  copyMsg.textContent = '';
+}
+
+generateBtn.addEventListener('click', generatePassword);
+
+copyBtn.addEventListener('click', async ()=>{
+  const dict = translations[currentLang] || translations.en;
+  const val = genOutput.value;
+  if(!val || val === dict.gen_placeholder || val === dict.select_option_msg) return;
+  try{
+    await navigator.clipboard.writeText(val);
+    copyMsg.textContent = dict.copy_msg;
+  }catch(e){
+    genOutput.select();
+    document.execCommand('copy');
+    copyMsg.textContent = dict.copy_msg;
+  }
+  setTimeout(()=>{ copyMsg.textContent=''; }, 3000);
+});
+
+// Footer signup — persisted by the website backend
+document.getElementById('signupForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const dict = translations[currentLang] || translations.en;
+  const emailInput = document.getElementById('signupEmail');
+  const signupBtn = document.getElementById('signupBtn');
+  const signupStatus = document.getElementById('signupStatus');
+
+  signupBtn.disabled = true;
+  signupBtn.textContent = '...';
+  signupStatus.textContent = '';
+
+  try{
+    const response = await fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email: emailInput.value, locale: currentLang || 'en' })
+    });
+    const result = await response.json();
+    if(!response.ok) throw new Error(result.error || 'Subscription failed');
+
+    signupBtn.dataset.i18n = 'footer_subscribed';
+    signupBtn.textContent = dict.footer_subscribed;
+    emailInput.disabled = true;
+  }catch(error){
+    signupStatus.textContent = error.message || 'Please try again.';
+    signupBtn.textContent = dict.footer_btn;
+    signupBtn.disabled = false;
+  }
+});
+</script>
+
+</body>
+</html>
