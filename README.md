@@ -2,6 +2,8 @@
 
 An interactive, multilingual cybersecurity education website built from the original **Stay Secure, Surf Sure** concept.
 
+**Live website:** https://cyber-tech-guardians.gpt-pro-9472.chatgpt.site
+
 ## What it includes
 
 - Nine-language interface with RTL support for Arabic and Urdu
